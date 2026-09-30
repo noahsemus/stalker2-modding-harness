@@ -32,8 +32,20 @@ mod learns something about the game itself. Line numbers refer to `<kit>\bp_api_
   `ResetInteractionTarget`, clear the flag, `EnableInputAfterInteraction`, `ToggleFOVAndForegroundRender(true)`,
   `DisableInteractions` (hides the seat prompt), and play the pose ourselves.
 - The vanilla sit's `SaveStatesBeforeInteraction` is only undone by its own exit (weapon half-state otherwise).
-- Binding `IA_PlayerCAExit` in a mod actor crashed (the game's delayable handler treats the bound object as the PC;
-  AV in the `PC.IsVaulting` thunk).
+  Calling `SaveStatesBeforeInteraction` / `RestoreStatesAfterInteraction` from a mod stores the weapon (hand type 0)
+  but pinned the view pitch at its minimum and left WASD dead after standing: don't.
+- Binding `IA_PlayerCAExit` (Started) in a mod actor is fine (Campfires since build 20). The crashes once blamed on it
+  were post-process ABP swaps (`animation.md`). While `IMC_PlayerCA` is applied, W/A/S/D/Space/F/Esc all arrive as
+  `IA_PlayerCAExit`, not as movement; if it stays applied after a sit (e.g. after re-entering the vanilla sit from a
+  mod), the player can look but not walk: remove it via the local player subsystem's `RemoveMappingContext`.
+- The sit montage `MG_fp_ca_gd_bonfire`: In 0-4 s, Idle 4-10 (loops), Out 10-14. The vanilla sit waits for the
+  `InteractAction` notify at 3.9996 s: `Montage_JumpToSection("Idle")` skips it and leaves the sit state unset (stuck);
+  `Montage_SetPosition(3.93)` skips the sit-down and still fires it.
+- Guitar: `IA_GuitarContextualAction` is in `/Game/_Stalker_2/data/input/InputActions/Guitar/`; it only works inside
+  the vanilla sit (setting `bInContextualAction` and injecting the action from a mod's own seated mode does nothing).
+  `AnimInstancePlayer.GuitarData.bPlayingGuitar` tells when the guitar is out.
+- `Obj.ChangeMainHandWeapon(None, ...)` did nothing after a takeover; `Obj.RemoveWeaponFromHands` hides the weapon
+  (the hand type stays the weapon's, so idle weapon fidgets and re-equips still play).
 - `CppMediator.lerp_player_to_location_and_rotation`, `CppMediator.start_quest_node(sid)` exist (seat placement,
   time-skip leads).
 
@@ -48,6 +60,12 @@ mod learns something about the game itself. Line numbers refer to `<kit>\bp_api_
   decouple = camera `Set Absolute` (rotation) + `Set World Rotation(Get Control Rotation)`, restoring the saved relative
   rotation after.
 - Camera-manager view pitch/yaw limits can be set per tick for a seated look clamp.
+- `PC.GetControlRotation` (pawn) and `Controller.GetControlRotation` are overridden and return the camera's view,
+  not `ControlRotation`; the controller actor's rotation never updates. A pose that drives `jnt_camera` from them is a
+  feedback loop (shake, no look). The first-person camera is the `jnt_camera` bone (a root child); the game's look
+  pitch is `AnimInstancePlayer.CameraData.ClampedControlPitch`, the explicit time of
+  `fp_bh_stand_lookvertical_idle` (mesh-space additive, 1 s: 0 = +90 deg, 1 = -90 deg); it equals `ControlRotation`
+  pitch exactly. Yaw from `GetControlRotation` is fine (the actor yaw follows it).
 
 ## Player actions, sprint, reload (Reloading research, 2026-09-30)
 - The player's action system is native: `ActionType` (read with `unreal.ActionType` in editor Python; includes

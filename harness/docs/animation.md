@@ -54,6 +54,20 @@ Mostly from ImmersiveDialogue 2.0-2.1 (walk in dialogue, arms, gestures) and Imm
   with no edits. Duplicate it to a mod-only path instead.
 - `BS_fp_bh_walk` is the bare-hands arm additive, not locomotion.
 
+## Pose tables (Campfires, working)
+- A seated pose that follows the view without an AnimBP: bake a sequence whose keys are the pose per view angle
+  (yaw rows x pitch keys, 30 fps), play it with `PlaySlotAnimationAsDynamicMontage` in `FullBody` and set its position
+  every tick from the view (actor ticks before the mesh: `AddTickPrerequisiteActor`). The montage does not stay
+  paused (`Montage_SetPlayRate(0)` did not hold): set position = target - DeltaSeconds * rate so the anim update lands
+  on the target. A plain pose also overrides `jnt_camera`, so bake the look pitch into it (see `game-facts.md`
+  § Camera for the pitch source); an additive pose passes the game's look through.
+- Item / PDA / backpack montages (`MainActionSlot`; mods may use `DefaultSlot` / `UpperBody`) key the hips 7.4 cm /
+  19 deg away from `fp_bh_idle_stand`, the same as `fp_ar_idle_stand`: build an additive meant to run under items on
+  `fp_ar_idle_stand`, or the legs swing while an item plays. Root children (`jnt_item` carries the PDA,
+  `jnt_camera`, IK roots) must move with a lowered pelvis.
+- Look up with `IsSlotActive(<slot>)` which kind of montage runs; `GetCurrentActiveMontage` returns the most recent
+  one only.
+
 ## Vanilla behaviour worth knowing
 - In static dialogue the native update keeps running but leaves `StateData.bMoving`, `bWalking`,
   `LocomotionData.MovementPlayRate.{Right,Forward}` at 0 and sets `bWalkingOverride = 1`;
