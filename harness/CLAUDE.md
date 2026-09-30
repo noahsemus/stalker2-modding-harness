@@ -10,6 +10,12 @@ The game is **S.T.A.L.K.E.R. 2: Heart of Chornobyl** (Unreal Engine 5.5, game pa
 official **Zone Kit** (GSC's UE 5.5 mod editor) and ship as **paks only**. UE4SS is a dev-box diagnostic tool and
 never ships.
 
+## Session start
+In a mod repo, run `harness/tools/sync_harness.ps1` first (gets harness updates other mods promoted), then read the
+mod's `CLAUDE.md` "Current state" so "where were we?" has an answer. On a new machine or fork, run
+`harness/tools/check_setup.ps1` and fix what it reports (for a novice, do the fixes yourself where you can: paths go
+in `harness/local.json`, account settings in `harness/config.json`).
+
 ## Roles (read `docs/collaboration.md` before the first reply of a session)
 - **The tester** (in this upstream: Noah) plays the game, does the clicks and pastes in the Zone Kit editor, and
   decides scope, releases and when to stop. He does not read code or run commands.

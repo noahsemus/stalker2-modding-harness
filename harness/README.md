@@ -10,6 +10,7 @@ PowerShell tools default `-Mod` to `mod.json` "name". Paths come from `config.js
 
 | Tool | Runs | Does |
 |---|---|---|
+| `tools/check_setup.ps1` | shell | read-only check of paths, Git, GitHub login, Claude Code, editor remote Python; prints fixes |
 | `tools/cook_and_install.ps1 [-Mod] [-Suffix N] [-NoInstall]` | shell | `GSCCookMod` (5-6 min), classifier-list sanity check + mirror, waits for the game to close, installs |
 | `tools/install_paktest.ps1 [-Mod] [-Suffix N]` | shell, game closed | staged OverrideContent → `~mods\zzz_<Mod>_PakTest\zzz_<Mod>_<N>_P.*` (default 30), NewContent under its kit name |
 | `tools/revert_paktest.ps1 [-Mod] [-Park]` | shell, game closed | removes (or parks outside `Content\Paks`) the dev test pak |
