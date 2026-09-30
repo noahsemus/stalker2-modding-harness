@@ -2,7 +2,7 @@
 
     from hconf import CFG, REPO, MOD, KIT, GAME, MODS_DIR
 
-CFG = harness/config.json merged with harness/local.json; MOD = mod.json (or {}).
+CFG = harness/config.json < machine settings (%LOCALAPPDATA%\stalker2-modding-harness\settings.json) < harness/local.json; MOD = mod.json (or {}).
 Editor-side scripts do not import this: ue_exec.py / run_headless.ps1 prepend a prelude with the same values.
 """
 import json
@@ -20,6 +20,7 @@ def _read(path):
 
 
 CFG = _read(os.path.join(REPO, "harness", "config.json"))
+CFG.update(_read(os.path.join(os.environ.get("LOCALAPPDATA", ""), "stalker2-modding-harness", "settings.json")))
 CFG.update(_read(os.path.join(REPO, "harness", "local.json")))
 MOD = _read(os.path.join(REPO, "mod.json"))
 KIT = CFG.get("kit", "")

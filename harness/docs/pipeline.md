@@ -83,7 +83,7 @@ never-saved temp asset crashes the commandlet: leave it unsaved instead.
 ## 7. Release (only on "cut a release")
 1. The tester confirms the full test matrix in game (the mod's PLAN.md; include gamepad and coexistence with our
    other mods).
-2. Remove the canary, re-cook, mirror, update README / BUILD / CLAUDE "Current state", commit on `main`, tag
+2. Remove the canary, re-cook, mirror, update README / BUILD / AGENTS "Current state", commit on `main`, tag
    `vX.Y.Z`.
 3. `make_release.py X.Y.Z --downloads`: zip with `README.txt` + `zzz_<Mod>_20_P.*` (+ NewContent under its kit
    name; optional plugins in their own folders, the Vortex extension's file chooser appears with > 3 pak-type

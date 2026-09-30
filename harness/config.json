@@ -1,5 +1,5 @@
 {
-  "_comment": "Machine paths used by every harness tool. Do not edit per machine: put overrides in harness/local.json (gitignored), same keys.",
+  "_comment": "Machine paths used by every harness tool. Do not edit per machine: setup.ps1 writes overrides to %LOCALAPPDATA%/stalker2-modding-harness/settings.json (same keys); harness/local.json overrides per repo.",
   "kit": "G:/Epic Games/STALKER2ZoneKit",
   "game": "C:/Program Files (x86)/Steam/steamapps/common/S.T.A.L.K.E.R. 2 Heart of Chornobyl",
   "ue4ss_source": "",

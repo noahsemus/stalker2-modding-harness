@@ -1,5 +1,5 @@
 # Shared setup for the harness PowerShell tools. Dot-source it:  . "$PSScriptRoot\common.ps1"
-# Gives: $Repo (repo root), $Cfg (harness/config.json merged with harness/local.json), $Kit, $Game, $Mods (~mods),
+# Gives: $Repo (repo root), $Cfg (harness/config.json < machine settings < harness/local.json), $Kit, $Game, $Mods (~mods),
 #        $ModCfg (mod.json or $null), and Get-ModName [-Mod X] (explicit -Mod, else mod.json "name").
 $ErrorActionPreference = "Stop"
 $Repo = (Resolve-Path "$PSScriptRoot\..\..").Path
@@ -7,8 +7,11 @@ $Repo = (Resolve-Path "$PSScriptRoot\..\..").Path
 function Read-Json($path) { if (Test-Path $path) { Get-Content $path -Raw | ConvertFrom-Json } else { $null } }
 
 $Cfg = Read-Json "$Repo\harness\config.json"
-$local = Read-Json "$Repo\harness\local.json"
-if ($local) { foreach ($p in $local.PSObject.Properties) { $Cfg | Add-Member -Force -NotePropertyName $p.Name -NotePropertyValue $p.Value } }
+# Machine settings (written by setup.ps1) apply to every repo on this PC; harness\local.json overrides per repo.
+$MachineSettings = "$env:LOCALAPPDATA\stalker2-modding-harness\settings.json"
+foreach ($local in @((Read-Json $MachineSettings), (Read-Json "$Repo\harness\local.json"))) {
+    if ($local) { foreach ($p in $local.PSObject.Properties) { $Cfg | Add-Member -Force -NotePropertyName $p.Name -NotePropertyValue $p.Value } }
+}
 $Kit  = $Cfg.kit  -replace '/', '\'
 $Game = ($Cfg.game -replace '/', '\') + "\Stalker2"
 $Mods = "$Game\Content\Paks\~mods"

@@ -33,7 +33,7 @@ try {
                 "{{DATE}}" = $date; "{{OWNER}}" = $Cfg.github_owner }
     function Fill($text) { foreach ($k in $subst.Keys) { $text = $text.Replace($k, $subst[$k]) }; $text }
     $utf8 = New-Object Text.UTF8Encoding $false
-    $map = @{ "CLAUDE.md" = "CLAUDE.md"; "PLAN.md" = "PLAN.md"; "BUILD.md" = "BUILD.md"; "README.md" = "README.md";
+    $map = @{ "AGENTS.md" = "AGENTS.md"; "CLAUDE.md" = "CLAUDE.md"; "GEMINI.md" = "GEMINI.md"; "PLAN.md" = "PLAN.md"; "BUILD.md" = "BUILD.md"; "README.md" = "README.md";
               "LOG.md" = "zonekit\README.md"; "gitignore" = ".gitignore" }
     New-Item -ItemType Directory -Force "zonekit\$Name", "zonekit\tools\classifier\$Name", "zonekit\builds" | Out-Null
     foreach ($t in $map.Keys) {

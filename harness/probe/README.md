@@ -23,7 +23,7 @@ Read-only diagnostics that log game state to `ue4ss\UE4SS.log` while the tester 
    target_link_libraries(${TARGET} PUBLIC UE4SS)
    set_target_properties(${TARGET} PROPERTIES OUTPUT_NAME "main")
    ```
-3. Build it inside an RE-UE4SS CMake tree (`ue4ss_source` in `harness/local.json`; on the upstream dev box the tree is
+3. Build it inside an RE-UE4SS CMake tree (`ue4ss_source` in the machine settings; on the upstream dev box the tree is
    `stalker2-immersive-dialogue`, whose root `CMakeLists.txt` adds sibling probes with `add_subdirectory` when they
    exist): `cmake --build Output --config Game__Shipping__Win64 --target <Short>ProbeCpp`.
 4. Install `main.dll` to `<game>\Stalker2\Binaries\Win64\ue4ss\Mods\<Short>ProbeCpp\dlls\main.dll`, add

@@ -1,16 +1,17 @@
 # harness/
 
 Shared agent instructions, knowledge and tools for S.T.A.L.K.E.R. 2 Zone Kit mods. Start with
-[CLAUDE.md](CLAUDE.md); knowledge is in [docs/](docs/). This folder is identical in every mod repo; see
+[AGENTS.md](AGENTS.md); knowledge is in [docs/](docs/). This folder is identical in every mod repo; see
 [docs/harness-workflow.md](docs/harness-workflow.md) before changing it.
 
 ## Tools
 Python = the kit's embedded interpreter `<kit>\Engine\Binaries\ThirdParty\Python3\Win64\python.exe`.
-PowerShell tools default `-Mod` to `mod.json` "name". Paths come from `config.json` + gitignored `local.json`.
+PowerShell tools default `-Mod` to `mod.json` "name". Paths: `config.json` defaults < machine settings `%LOCALAPPDATA%\stalker2-modding-harness\settings.json` (written by `setup.ps1`) < gitignored `harness/local.json`.
 
 | Tool | Runs | Does |
 |---|---|---|
-| `tools/check_setup.ps1` | shell | read-only check of paths, Git, GitHub login, Claude Code, editor remote Python; prints fixes |
+| `tools/check_setup.ps1` | shell | read-only check of paths, Git, GitHub login, fork settings, editor remote Python; prints fixes |
+| `tools/setup.ps1 [-Install] [-Fork]` | shell | does the automatable setup: finds the kit and game, writes the machine settings, installs Git / GitHub CLI, forks the harness, turns on editor remote Python |
 | `tools/cook_and_install.ps1 [-Mod] [-Suffix N] [-NoInstall]` | shell | `GSCCookMod` (5-6 min), classifier-list sanity check + mirror, waits for the game to close, installs |
 | `tools/install_paktest.ps1 [-Mod] [-Suffix N]` | shell, game closed | staged OverrideContent → `~mods\zzz_<Mod>_PakTest\zzz_<Mod>_<N>_P.*` (default 30), NewContent under its kit name |
 | `tools/revert_paktest.ps1 [-Mod] [-Park]` | shell, game closed | removes (or parks outside `Content\Paks`) the dev test pak |

@@ -28,7 +28,7 @@
   silently skips the first line.
 - Heavy work (`ForEachUObject`, `FindAllOf`) only on state edges, never per tick; per-tick work runs on the game
   thread and stalls rendering and input.
-- Build: RE-UE4SS clone (set `ue4ss_source` in `harness/local.json`; the dev box has one in
+- Build: RE-UE4SS clone (set `ue4ss_source` in the machine settings; the dev box has one in
   `stalker2-immersive-dialogue\RE-UE4SS`). Needs VS 2022 Desktop C++, CMake 3.22+, Rust (patternsleuth), the GitHub
   account linked to Epic Games (private `UEPseudo` submodule) and
   `git config --global url."https://github.com/".insteadOf "git@github.com:"`. Only `Game__Shipping__Win64` matches
