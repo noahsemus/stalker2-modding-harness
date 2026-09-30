@@ -16,6 +16,11 @@ in the editor, (3) only then build something.**
 | `<kit>\Stalker2\Content\Paks\FullEditor-WindowsModEditor.pak` | The uncooked game content (388 GB). `UnrealPak <pak> -List` lists the index (slow; save it once to the scratchpad; `-Filter` does not filter). `tools/pak/extract_from_pak.py` pulls single uncompressed assets out by offset. |
 | `%LOCALAPPDATA%\Stalker2\Saved\` | The player's side: `CustomizeControls.cfg` (rebinds), `Config\WindowsEditor\EditorPerProjectUserSettings.ini` (editor), game logs `Logs\Stalker2*.log`. |
 
+Editor Python sees more than the dumps: native **enum values** (`[x for x in dir(unreal.ActionType) if x.isupper()]`),
+an asset's triggers/modifiers, class function lists (`dir(unreal.SomeClass)`). Run read-only snippets in the open
+editor with `ue_exec.py` before asking the tester to look. Properties that are not BlueprintVisible/EditAnywhere
+are invisible to Python; for those, ask him to open the Details panel.
+
 Engine source 5.5 is readable without a clone: `gh api repos/EpicGames/UnrealEngine/contents/<path>?ref=5.5`
 (needs the GitHub account linked to Epic Games).
 

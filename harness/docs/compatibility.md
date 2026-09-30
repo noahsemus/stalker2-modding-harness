@@ -35,11 +35,32 @@ conflict with every other mod shipping that asset, and whichever loses loses *al
 - **UObjectCacheMod** (UE4SS Lua): caches objects, rebuilds on transitions; probes must load before it.
 - **Better Vaulting, grEdit**: examples of cfg `_patch_` style mods.
 
-## MCM (Mod Configuration Menu, Nexus 2225)
-Community settings menu used by several Zone Kit mods. Interfaces seen imported: `/ModConfigurationMenu/BPI_MCM_API`,
-`BPI_MCM_SettingsProvider`, `E_MCM_SettingType`; functions `RegisterMCMSettings`, `RegisterModSetting`,
-`RegisterDefaultModSetting`, `GetModSetting` (bool / float / int / keybind / combobox), `OnCheckStateChanged`,
-`OnSliderValueChange`, `OnMCMButtonPressed`, `AddUniqueModID`. Rule: the main mod keeps settings as variables with
-defaults and imports nothing from MCM; a separate optional `<Mod>MCM` plugin implements the provider interface and
-writes the values into the main mod's actor. Compiling it needs MCM's interface assets available in the kit (from
-its author guide / example mod). Details grow here as a mod implements it.
+- **OXA** (Nexus 939): bpatches `WeaponReloadTimePerAttachment` and more for many weapons, adds ~27 weapons with their
+  own arrays, `ReloadTime_Minus*` effects on magazines, and **overrides 38 vanilla `AnimCollection_fp_*`** (the
+  player's per-weapon animation collections). Never override those; per-weapon cfg presets would fight OXA and miss
+  its weapons.
+- **grEdit Ballistics**: recoil/dispersion bpatches in the weapon file; **Better Stamina** patches Player
+  `StaminaPerAction.Sprint`; **PIR** patches Player vitals and sleep-mechanic effects. All patch-file mods: only the
+  same field collides.
+
+## MCM (Mod Configuration Menu 2.0, Nexus 2225, by KynesPeace)
+Community settings menu (Zone Kit NewContent under `/ModConfigurationMenu/`, opened in game from its own key).
+Read from the installed containers with `zen_names.py` (2026-09-30):
+- `BPI_MCM_API`: `AddUniqueModID`, `RegisterModSetting`, `RegisterDefaultModSetting`, `GetModSetting`,
+  `SetModSetting`, `TriggerButtonAction` (params ModID, SettingID, Category, Type, AuthorName, SettingHoverText,
+  Bool/Float/Int/String/Vector/Rotator/Transform values, Keybind, ComboBoxOptions, ButtonText,
+  FloatControllerStepValue, header textures).
+- `BPI_MCM_SettingsProvider`: `RegisterMCMSettings`, `RegisterMCMDefaultSettings`, `ApplyMCMSettings`,
+  `OnMCMButtonPressed`.
+- `Enums/E_MCM_SettingType`: bool, float, int, string, vector, rotator, transform, key, combobox, button.
+- Discovery: `BP_MCM_Manager` calls `GetAllActorsWithInterface` and calls the provider interface on each, so **a
+  provider is any spawned actor implementing `BPI_MCM_SettingsProvider`**. Values persist in the save game
+  (`MWS_MCM` subsystem, `SG_MCM_Settings`).
+- Author guide (Notion) and an "MCM Example Mod" are linked from the Nexus / Steam Workshop pages.
+
+Rule: a Blueprint that implements or calls these interfaces hard-imports `/ModConfigurationMenu/...` and fails to
+load without MCM (Immersive HUD's actor does this). So the main mod keeps settings as variables with defaults and
+imports nothing from MCM; an optional `<Mod>MCM` plugin spawns the provider and writes values into the main mod's
+actor. Open: whether a NewContent Blueprint in one plugin can reference another plugin's class and survive the cook
+(untested; fallback = ship an MCM variant of the whole mod). Compiling needs MCM's interface assets in the kit (its
+source plugin in `<kit>\Stalker2\Mods\`, from the example mod / guide).

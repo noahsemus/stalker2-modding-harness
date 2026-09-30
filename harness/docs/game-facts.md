@@ -49,6 +49,36 @@ mod learns something about the game itself. Line numbers refer to `<kit>\bp_api_
   rotation after.
 - Camera-manager view pitch/yaw limits can be set per tick for a seated look clamp.
 
+## Player actions, sprint, reload (Reloading research, 2026-09-30)
+- The player's action system is native: `ActionType` (read with `unreal.ActionType` in editor Python; includes
+  `RELOAD_WEAPON`, `UNLOAD_WEAPON`, `UNJAM_WEAPON`, `SPRINT`, `RUN`, `JOGGING`, `USE_CONSUMABLE_ITEM`, `USE_PDA`,
+  `USE_BACKPACK`, ...), `PlayerTriggerState` (`RELOAD_TRIGGER`, `SPRINT_TRIGGER`, `SPRINT_STARTED_TRIGGER`, ...),
+  driven by montage notifies `AnimNotify_PlayerAction` (END / INTERRUPT) and `AnimNotify_PlayerActionTrigger`.
+  `PC.is_action_active(ActionType)` tests whether an action runs. `MagazineReloadState`: DEFAULT, EJECTED, INSERTED,
+  NONE (`Obj.get_current_reload_state`).
+- `Obj` (player base) BP surface: `can_enter_to_sprint`, `is_sprinting`, `is_should_sprint`, `reload`,
+  `reload_weapon`, `interrupt_reload`, `finish_reload`, `is_reload_available`, `set_speed_multiplier` /
+  `get_speed_multiplier`, `update_movement_speed`, `force_set_sp` / `get_sp` / `get_max_sp` (stamina);
+  `PC.velocity_multimplier` (sic, Read-Write), `PC.on_sprint_released`.
+- Vanilla (player reports, to confirm): sprinting cancels a reload (it restarts from the beginning); pressing reload
+  while sprinting drops to a run and reloads. No cfg field governs it; `IA_Sprint` and `IA_Reload`
+  (`InputActions/Delayable/`) carry **no triggers or modifiers** (checked 2026-09-30), so there is no asset-side
+  blocker: the rule is native. There is no `ReloadIPU`; `SprintIPU` is native.
+- Blocking an action by data: effect `EEffectType::BlockAnimationActionType` with `BlockAnimationTypes`
+  `EActionType::Sprint` (vanilla `BlockSprintEffect`, permanent, used for heavy exoskeletons; `ConcussionBlockSprint`
+  is timed, `Duration = 3`). Stamina gates sprint through `StaminaDisableThresholds` (16.1) and overweight state tags.
+- Reload speed by data: effect `EEffectType::ReloadingTime`, `ValueMin/Max` in %, **negative = faster**
+  (`ReloadingTimeDecBy25` -25%; sleepiness applies +15% / +18.75% to the player; OXA puts them on magazines). Per
+  weapon: `WeaponReloadTimePerAttachment` multipliers (lower = faster) in `WeaponGeneralSetupPrototypes.cfg`, likely
+  shared with NPC weapons.
+- Applying an effect from Blueprint: no direct function. Candidates: `ApplyEffectComponent.apply_effects(target)` /
+  `remove_effects` (its effect list is not visible to Python; check the Details panel), or
+  `CppMediator.start_quest_node(sid)` on a mod quest node `EQuestNodeType::SetCharacterEffect` (empty target = player,
+  as in `QuestNodePrototypes/Benchmark_combat.cfg:273`; no "remove effect" node exists, use timed effects). Neither is
+  tested yet.
+- ~540 first-person reload montages (`MG_*reload*`) sit behind per-weapon `AnimCollection_fp_*` data assets
+  (`PlayerFirearmAnimCollection`) and the layer graph `AnimBP_PlayerWeaponLayer` / `AnimLI_PlayerWeapon*`.
+
 ## Items and UI
 - Artifact inspection has no input action of its own; it launches from the backpack UI.
 - The dialogue skip hint `W_SkipHintView` has native show logic (`SkipHintView` base); the BP is layout + fade only.
