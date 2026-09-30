@@ -5,6 +5,7 @@
 # exit before the script). The script gets the same prelude as ue_exec.py (MOD, MOD_ROOT, UPLUGIN, SCRATCH, ...).
 param([Parameter(Mandatory)][string]$Script, [string]$Mod, [string[]]$Arg = @())
 . "$PSScriptRoot\common.ps1"
+Assert-Setup kit
 $Mod = Get-ModName $Mod
 $py = "$Kit\Engine\Binaries\ThirdParty\Python3\Win64\python.exe"
 $tmp = "$env:TEMP\harness_headless_$([IO.Path]::GetFileNameWithoutExtension($Script)).py"

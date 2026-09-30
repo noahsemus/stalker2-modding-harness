@@ -11,7 +11,8 @@ import sys
 import time
 
 sys.path.insert(0, os.path.dirname(__file__))
-from hconf import KIT, prelude  # noqa: E402
+from hconf import KIT, prelude, require  # noqa: E402
+require("kit")
 
 sys.path.insert(0, os.path.join(KIT, "Engine/Plugins/Experimental/PythonScriptPlugin/Content/Python"))
 import remote_execution as re_  # noqa: E402

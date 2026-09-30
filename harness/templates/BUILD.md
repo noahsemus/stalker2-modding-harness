@@ -7,7 +7,7 @@ and [harness/docs/blueprints.md](harness/docs/blueprints.md).
 ## 1. Prerequisites
 - S.T.A.L.K.E.R. 2 Zone Kit (Epic Games Store), ~600 GB free. First launch compiles shaders for a long time.
 - Git. No Python install needed (the kit ships 3.11).
-- Paths: `harness/config.json`; run `harness\tools\setup.ps1` to detect yours.
+- Run `harness\tools\setup.ps1` once: it finds your Zone Kit and game and stores them outside the repo.
 
 ## 2. What the mod is
 A Zone Kit plain-mod plugin `{{MOD}}`.

@@ -1,6 +1,6 @@
 # Harness lifecycle: new mods, syncing, promoting
 
-One central harness (github.com/noahsemus/stalker2-modding-harness), one copy of `harness/` inside every mod repo,
+One central harness (the public project, or the user's fork of it: `harness_remote_url`), one copy of `harness/` inside every mod repo,
 never edited independently. Mod repos are created from the harness and keep it as a git remote named `harness`.
 
 ## Ownership
@@ -56,7 +56,7 @@ Add the remote, check out the harness, record the sync point, move the repo's ge
 in `harness/`), move the mod's agent instructions into `AGENTS.md` (starting with "First read `harness/AGENTS.md`")
 and add the two shims from `harness/templates/`:
 ```
-git remote add harness https://github.com/noahsemus/stalker2-modding-harness.git
+git remote add harness <harness_remote_url from the machine settings>
 git fetch harness main
 git checkout harness/main -- harness
 git rev-parse harness/main > .harness-sync

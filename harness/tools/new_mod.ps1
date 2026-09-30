@@ -13,6 +13,7 @@ param(
     [switch]$NoKit, [switch]$NoGitHub, [switch]$Private
 )
 . "$PSScriptRoot\common.ps1"
+Assert-Setup (@("github_owner", "harness_remote_url") + $(if ($NoKit) { @() } else { @("kit") }))
 $here = $RepoName   # $Repo (from common.ps1) = this checkout
 $dest = Join-Path (Split-Path $Repo -Parent) $here
 if (Test-Path $dest) { throw "$dest already exists" }

@@ -6,6 +6,7 @@
 # copy at _20_P). Use 40 to beat a mod that itself ships _30_P, 25 to reproduce a user where that mod wins.
 param([string]$Mod, [int]$Suffix = 0)
 . "$PSScriptRoot\common.ps1"
+Assert-Setup kit, game
 $Mod = Get-ModName $Mod
 if (-not $Suffix) { $Suffix = Get-Priority "dev_pak_suffix" 30 }
 if (Test-GameRunning) { throw "game is running" }

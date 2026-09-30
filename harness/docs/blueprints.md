@@ -15,7 +15,7 @@ of 20-200 nodes (event graphs and anim graphs).
 3. Put it on the clipboard (`Set-Clipboard -Value (Get-Content <file> -Raw)`), the tester clicks into the graph and
    presses Ctrl+V, then wires only the 1-3 pins that connect to nodes outside the block. **Links to nodes that are
    not in the paste are dropped**, so keep external wiring minimal and name those pins exactly.
-4. He compiles and saves; read it back with `export_t3d.py` to verify (the export lists deleted-but-not-GC'd nodes
+4. They compile and save; read it back with `export_t3d.py` to verify (the export lists deleted-but-not-GC'd nodes
    too: trust each graph's `Nodes(n)` list).
 
 Put `NodeComment` labels and comment boxes in the generated text (see `collaboration.md`). Keep mod-specific

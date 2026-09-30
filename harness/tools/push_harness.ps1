@@ -5,6 +5,7 @@
 # Other mods pick the change up with their own sync_harness.ps1.
 param([Parameter(Mandatory)][string]$Message, [switch]$NoPush)
 . "$PSScriptRoot\common.ps1"
+Assert-Setup harness_remote_url
 Set-Location $Repo
 if (-not (Test-Path "$Repo\.harness-sync")) { throw "run this from a mod repo; in the harness repo just commit and push" }
 $base = (Get-Content "$Repo\.harness-sync" -Raw).Trim()

@@ -15,7 +15,8 @@ import sys
 import zipfile
 
 sys.path.insert(0, os.path.dirname(__file__))
-from hconf import CFG, KIT, MOD, REPO  # noqa: E402
+from hconf import CFG, KIT, MOD, REPO, require  # noqa: E402
+require("kit")
 
 
 def paks(plugin, suffix):

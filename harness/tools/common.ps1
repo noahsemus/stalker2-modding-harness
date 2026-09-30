@@ -12,6 +12,16 @@ $MachineSettings = "$env:LOCALAPPDATA\stalker2-modding-harness\settings.json"
 foreach ($local in @((Read-Json $MachineSettings), (Read-Json "$Repo\harness\local.json"))) {
     if ($local) { foreach ($p in $local.PSObject.Properties) { $Cfg | Add-Member -Force -NotePropertyName $p.Name -NotePropertyValue $p.Value } }
 }
+if (-not $Cfg.harness_remote_url -and $Cfg.github_owner) {
+    $Cfg | Add-Member -Force -NotePropertyName harness_remote_url -NotePropertyValue "https://github.com/$($Cfg.github_owner)/stalker2-modding-harness.git"
+}
+
+# Tools call this for the settings they need; config.json ships empty values, setup.ps1 fills them per machine.
+function Assert-Setup([string[]]$Keys = @("kit", "game")) {
+    $missing = $Keys | Where-Object { -not $Cfg.$_ }
+    if ($missing) { throw "Not set up on this PC yet ($($missing -join ', ') missing). Run: powershell -ExecutionPolicy Bypass -File harness\tools\setup.ps1" }
+}
+
 $Kit  = $Cfg.kit  -replace '/', '\'
 $Game = ($Cfg.game -replace '/', '\') + "\Stalker2"
 $Mods = "$Game\Content\Paks\~mods"

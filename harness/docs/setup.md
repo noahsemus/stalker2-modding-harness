@@ -10,7 +10,7 @@ PowerShell; run `.ps1` tools as `powershell -ExecutionPolicy Bypass -File <path>
   `git clone https://github.com/noahsemus/stalker2-modding-harness.git` there (if Git is missing, do step 2 first).
   All mod folders will be created next to it. Continue inside `stalker2-modding-harness`.
 - Run `harness\tools\setup.ps1` (no switches). It finds the Zone Kit (Epic launcher manifests) and the game (Steam
-  libraries), writes the machine settings `%LOCALAPPDATA%\stalker2-modding-harness\settings.json` with anything that differs from the defaults, and ends with
+  libraries), writes the machine settings `%LOCALAPPDATA%\stalker2-modding-harness\settings.json` (paths and GitHub account; never inside the repo), and ends with
   `check_setup.ps1`. Work through what it reports, in this order:
 
 ## 1. Things only the user can do (ask for them early; downloads are long)
@@ -52,5 +52,4 @@ editor when asked) and ask what their first mod should do. Create it with `new_m
 (`harness-workflow.md` § New mod), choosing the three names with them, then tell them to restart the editor and pick
 the new mod once in the toolbar mod selector.
 
-Optional: the agent instructions call the tester "Noah" (the upstream author). If the user wants, replace the name in
-their fork's `harness/AGENTS.md` and `harness/docs/collaboration.md` and push it.
+

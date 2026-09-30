@@ -4,6 +4,7 @@
 #   Content\Paks\: the game scans that tree recursively and would still mount it.
 param([string]$Mod, [switch]$Park)
 . "$PSScriptRoot\common.ps1"
+Assert-Setup game
 $Mod = Get-ModName $Mod
 if (Test-GameRunning) { throw "game is running" }
 $dirs = Get-ChildItem $Mods -Directory -Filter "zzz_${Mod}*_PakTest" -ErrorAction SilentlyContinue

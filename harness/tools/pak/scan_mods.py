@@ -14,7 +14,9 @@ import re
 import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
-from hconf import MODS_DIR  # noqa: E402
+from hconf import MODS_DIR, require  # noqa: E402
+if "--dir" not in sys.argv:
+    require("game")
 
 
 def priority(fname):

@@ -4,6 +4,7 @@
 # The editor may stay open. Install waits for the game to close.
 param([string]$Mod, [int]$Suffix = 0, [switch]$NoInstall)
 . "$PSScriptRoot\common.ps1"
+Assert-Setup kit, game
 $Mod = Get-ModName $Mod
 
 # Classifier lists: the kit copy is what the cook reads (and what Package Mod edits). Seed it from the repo if

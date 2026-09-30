@@ -11,7 +11,8 @@ import re
 import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
-from hconf import KIT  # noqa: E402
+from hconf import KIT, require  # noqa: E402
+require("kit")
 
 PAK = os.path.join(KIT, "Stalker2/Content/Paks/FullEditor-WindowsModEditor.pak")
 MAGIC = bytes.fromhex("C1832A9E")

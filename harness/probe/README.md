@@ -1,4 +1,4 @@
-# UE4SS probes (dev box only; never shipped)
+# UE4SS probes (modder's PC only; never shipped)
 
 Read-only diagnostics that log game state to `ue4ss\UE4SS.log` while the tester plays. Rules in
 `../docs/diagnostics.md`. Examples here are real probes from earlier mods, kept as starting points:
@@ -23,9 +23,8 @@ Read-only diagnostics that log game state to `ue4ss\UE4SS.log` while the tester 
    target_link_libraries(${TARGET} PUBLIC UE4SS)
    set_target_properties(${TARGET} PROPERTIES OUTPUT_NAME "main")
    ```
-3. Build it inside an RE-UE4SS CMake tree (`ue4ss_source` in the machine settings; on the upstream dev box the tree is
-   `stalker2-immersive-dialogue`, whose root `CMakeLists.txt` adds sibling probes with `add_subdirectory` when they
-   exist): `cmake --build Output --config Game__Shipping__Win64 --target <Short>ProbeCpp`.
+3. Build it inside an RE-UE4SS CMake tree (`ue4ss_source` in the machine settings; add the probe folder to that tree's root `CMakeLists.txt` with
+   `add_subdirectory(<path to probe> <Short>ProbeCpp)`): `cmake --build Output --config Game__Shipping__Win64 --target <Short>ProbeCpp`.
 4. Install `main.dll` to `<game>\Stalker2\Binaries\Win64\ue4ss\Mods\<Short>ProbeCpp\dlls\main.dll`, add
    `<Short>ProbeCpp : 1` to `mods.txt` **above** `UObjectCacheMod`, ASCII without BOM.
 5. Prove it logs (heartbeat / main-menu line) before asking for a run. Remove it (folder + `mods.txt` line) when the

@@ -1,6 +1,6 @@
 # The Zone Kit as a research tool
 
-Default location `G:\Epic Games\STALKER2ZoneKit` (`<kit>`; see `harness/config.json`). The kit is both GSC's UE 5.5
+Location: wherever the Epic launcher installed it (`<kit>` below; `setup.ps1` finds it and stores it in the machine settings). The kit is both GSC's UE 5.5
 mod editor (`Stalker2ModEditor.exe`, a monolithic Shipping build) and the best available reference for how the game
 works. Research order for any new system: **(1) grep the dumps and cfgs, (2) ask the tester to open matching assets
 in the editor, (3) only then build something.**
@@ -19,7 +19,7 @@ in the editor, (3) only then build something.**
 Editor Python sees more than the dumps: native **enum values** (`[x for x in dir(unreal.ActionType) if x.isupper()]`),
 an asset's triggers/modifiers, class function lists (`dir(unreal.SomeClass)`). Run read-only snippets in the open
 editor with `ue_exec.py` before asking the tester to look. Properties that are not BlueprintVisible/EditAnywhere
-are invisible to Python; for those, ask him to open the Details panel.
+are invisible to Python; for those, ask the tester to open the Details panel.
 
 Engine source 5.5 is readable without a clone: `gh api repos/EpicGames/UnrealEngine/contents/<path>?ref=5.5`
 (needs the GitHub account linked to Epic Games).
@@ -30,10 +30,10 @@ editor. Ask targeted questions, e.g.:
 - "Content Browser, search `DA_Weapon*`, open the one for the AKM, screenshot the Details panel."
 - "Open `BP_X`, Event Graph, Ctrl+F `Reload`, screenshot the wired nodes."
 - "Right-click asset W → Reference Viewer, screenshot."
-- Better still for graphs: have him select all (Ctrl+A) and copy (Ctrl+C) and read the clipboard, or export the
+- Better still for graphs: have them select all (Ctrl+A) and copy (Ctrl+C) and read the clipboard, or export the
   graph yourself with `tools/editor/export_t3d.py` through `ue_exec.py` (no tester needed).
 
-Precedent: a full day of blind iteration on a strafe animation ended in 20 minutes once he opened the anim BP and it
+Precedent: a full day of blind iteration on a strafe animation ended in 20 minutes once the tester opened the anim BP and it
 showed `MovementPlayRate` was a struct with `RightValue / ForwardValue / PlayRate`, not a float.
 
 ## What is worth opening

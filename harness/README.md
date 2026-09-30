@@ -6,7 +6,7 @@ Shared agent instructions, knowledge and tools for S.T.A.L.K.E.R. 2 Zone Kit mod
 
 ## Tools
 Python = the kit's embedded interpreter `<kit>\Engine\Binaries\ThirdParty\Python3\Win64\python.exe`.
-PowerShell tools default `-Mod` to `mod.json` "name". Paths: `config.json` defaults < machine settings `%LOCALAPPDATA%\stalker2-modding-harness\settings.json` (written by `setup.ps1`) < gitignored `harness/local.json`.
+PowerShell tools default `-Mod` to `mod.json` "name". Per-user values (paths, GitHub account) live outside the repo: `config.json` has only generic defaults, overridden by the machine settings `%LOCALAPPDATA%\stalker2-modding-harness\settings.json` (written by `setup.ps1`) < gitignored `harness/local.json`.
 
 | Tool | Runs | Does |
 |---|---|---|
@@ -33,4 +33,4 @@ PowerShell tools default `-Mod` to `mod.json` "name". Paths: `config.json` defau
 | `tools/pak/scan_mods.py <Name>...` | shell | which installed mod containers mention an asset, with mount order |
 | `tools/make_release.py X.Y.Z [--downloads]` | shell | release zip from the last cook |
 | `tools/new_mod.ps1`, `sync_harness.ps1`, `push_harness.ps1` | shell | harness lifecycle (`docs/harness-workflow.md`) |
-| `probe/` | dev box | UE4SS C++/Lua probe examples and build notes |
+| `probe/` | modder's PC only | UE4SS C++/Lua probe examples and build notes |

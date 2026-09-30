@@ -22,6 +22,8 @@ def _read(path):
 CFG = _read(os.path.join(REPO, "harness", "config.json"))
 CFG.update(_read(os.path.join(os.environ.get("LOCALAPPDATA", ""), "stalker2-modding-harness", "settings.json")))
 CFG.update(_read(os.path.join(REPO, "harness", "local.json")))
+if not CFG.get("harness_remote_url") and CFG.get("github_owner"):
+    CFG["harness_remote_url"] = f"https://github.com/{CFG['github_owner']}/stalker2-modding-harness.git"
 MOD = _read(os.path.join(REPO, "mod.json"))
 KIT = CFG.get("kit", "")
 GAME = os.path.join(CFG.get("game", ""), "Stalker2")
@@ -44,3 +46,11 @@ def prelude(mod_name=None, args=None):
         "ARGS": dict(args or {}),
     }
     return "".join(f"{k} = {v!r}\n" for k, v in vals.items()) + "# ---- end harness prelude ----\n"
+
+
+def require(*keys):
+    """Exit with a clear message when this PC has not been set up (config.json ships empty per-user values)."""
+    missing = [k for k in keys if not CFG.get(k)]
+    if missing:
+        raise SystemExit(f"Not set up on this PC yet ({', '.join(missing)} missing). "
+                         "Run: powershell -ExecutionPolicy Bypass -File harness/tools/setup.ps1")

@@ -5,6 +5,7 @@
 # the repo copy too (robocopy /MIR), so the repo matches what will cook.
 param([string]$Mod, [switch]$WhatIf)
 . "$PSScriptRoot\common.ps1"
+Assert-Setup kit
 $Mod = Get-ModName $Mod
 $src = "$Kit\Stalker2\Mods\$Mod"
 $dst = "$Repo\zonekit\$Mod"

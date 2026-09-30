@@ -5,6 +5,7 @@
 # (which discards them).
 param([switch]$Force, [switch]$NoCommit)
 . "$PSScriptRoot\common.ps1"
+Assert-Setup harness_remote_url
 Set-Location $Repo
 if (-not (Test-Path "$Repo\.harness-sync")) { throw "not a mod repo (no .harness-sync); in the harness repo itself just git pull" }
 if (-not (git remote | Select-String -Quiet '^harness$')) { git remote add harness $Cfg.harness_remote_url }

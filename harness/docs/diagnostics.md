@@ -6,7 +6,7 @@
 | Game log (mounts, asserts, crash summary) | `%LOCALAPPDATA%\Stalker2\Saved\Logs\Stalker2.log` (+ `Stalker2_2.log`, `Stalker2-backup-*.log`) |
 | Game crash reports | `%LOCALAPPDATA%\Stalker2\Saved\Crashes\` |
 | Player rebinds / settings | `%LOCALAPPDATA%\Stalker2\Saved\CustomizeControls.cfg`, `...\Config\` |
-| UE4SS log / crash dumps (dev box) | `<game>\Stalker2\Binaries\Win64\ue4ss\UE4SS.log`, `ue4ss\crash_*.dmp` |
+| UE4SS log / crash dumps (only if UE4SS is installed) | `<game>\Stalker2\Binaries\Win64\ue4ss\UE4SS.log`, `ue4ss\crash_*.dmp` |
 | UE4SS mod list | `ue4ss\Mods\mods.txt` |
 | Installed mods | `<game>\Stalker2\Content\Paks\~mods\` |
 | Cook log | `%TEMP%\<Mod>_cook.log` |
@@ -20,7 +20,7 @@
 - A byte scan (`dump_names.py`) cannot tell a hard import from a soft path; parse the import map (`zen_names.py
   --imports` on cooked files).
 
-## UE4SS probes (dev box only, never shipped)
+## UE4SS probes (modder's PC only, never shipped)
 - Read-only C++ probe (`harness/probe/`), SEH-guarded (`__try/__except` around raw memory reads, no objects with
   destructors inside the guarded function), reading only while the relevant state is active.
 - **List the probe before `UObjectCacheMod` in `mods.txt`**, or `FindFirstOf` returns stale objects.
@@ -28,8 +28,7 @@
   silently skips the first line.
 - Heavy work (`ForEachUObject`, `FindAllOf`) only on state edges, never per tick; per-tick work runs on the game
   thread and stalls rendering and input.
-- Build: RE-UE4SS clone (set `ue4ss_source` in the machine settings; the dev box has one in
-  `stalker2-immersive-dialogue\RE-UE4SS`). Needs VS 2022 Desktop C++, CMake 3.22+, Rust (patternsleuth), the GitHub
+- Build: RE-UE4SS clone (clone it anywhere and set `ue4ss_source` in the machine settings). Needs VS 2022 Desktop C++, CMake 3.22+, Rust (patternsleuth), the GitHub
   account linked to Epic Games (private `UEPseudo` submodule) and
   `git config --global url."https://github.com/".insteadOf "git@github.com:"`. Only `Game__Shipping__Win64` matches
   the game's CRT (plain Release/Debug don't exist: MSB8013). Output `main.dll` → `ue4ss\Mods\<Probe>\dlls\main.dll`
@@ -54,4 +53,4 @@ stream + MemoryListStream + a link map work without a debugger.
 ## Control tests
 When a symptom might not be ours, park our dev pak (outside `Content\Paks\`) and have the tester repeat the exact
 steps. Known not-ours: the sleep black-screen soft hang (vanilla with all paks off sleeps fine; with the tester's mod
-set it hangs; bisect order if he ever wants it: UltraPlusExtensions → UObjectCacheMod → other time/weather mods).
+set it hangs; bisect order if the tester wants it: UltraPlusExtensions → UObjectCacheMod → other time/weather mods).

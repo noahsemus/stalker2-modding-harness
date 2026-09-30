@@ -4,6 +4,7 @@
 # editor work). Close the editor first, or at least close every asset of this mod.
 param([string]$Mod, [switch]$Force)
 . "$PSScriptRoot\common.ps1"
+Assert-Setup kit
 $Mod = Get-ModName $Mod
 $src = "$Repo\zonekit\$Mod"
 $dst = "$Kit\Stalker2\Mods\$Mod"

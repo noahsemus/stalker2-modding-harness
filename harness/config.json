@@ -1,10 +1,11 @@
 {
-  "_comment": "Machine paths used by every harness tool. Do not edit per machine: setup.ps1 writes overrides to %LOCALAPPDATA%/stalker2-modding-harness/settings.json (same keys); harness/local.json overrides per repo.",
-  "kit": "G:/Epic Games/STALKER2ZoneKit",
-  "game": "C:/Program Files (x86)/Steam/steamapps/common/S.T.A.L.K.E.R. 2 Heart of Chornobyl",
-  "ue4ss_source": "",
+  "_comment": "Generic defaults only; nothing about any one user belongs here. Per-user values (kit, game, github_owner, harness_remote_url, ue4ss_source) are detected by harness/tools/setup.ps1 and stored outside the repo in %LOCALAPPDATA%/stalker2-modding-harness/settings.json (same keys). harness_remote_url defaults to the github_owner's fork.",
+  "kit": "",
+  "game": "",
+  "github_owner": "",
+  "harness_remote_url": "",
+  "upstream_url": "https://github.com/noahsemus/stalker2-modding-harness.git",
   "harness_clone": "../stalker2-modding-harness",
-  "harness_remote_url": "https://github.com/noahsemus/stalker2-modding-harness.git",
-  "github_owner": "noahsemus",
+  "ue4ss_source": "",
   "downloads": "~/Downloads"
 }
