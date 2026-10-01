@@ -66,7 +66,11 @@ Mostly from ImmersiveDialogue 2.0-2.1 (walk in dialogue, arms, gestures) and Imm
   `fp_ar_idle_stand`, or the legs swing while an item plays. Root children (`jnt_item` carries the PDA,
   `jnt_camera`, IK roots) must move with a lowered pelvis.
 - Look up with `IsSlotActive(<slot>)` which kind of montage runs; `GetCurrentActiveMontage` returns the most recent
-  one only.
+  one only, and from an actor's tick it is not reliable for "which item is playing" (Campfires: an item used from
+  the backpack was never returned; a pose montage of ours was). Bind `AnimInstance.OnMontageStarted` instead
+  (`K2Node_AddDelegate` + custom event, once per anim instance) and keep the last montage it reports. Dynamic
+  montages from `PlaySlotAnimationAsDynamicMontage` with a big LoopCount have a huge `GetPlayLength`: filter them out
+  by length. `Montage_SetPlayRate` / `Montage_IsActive` / `Montage_IsPlaying` with a None montage act on ANY montage.
 
 ## Vanilla behaviour worth knowing
 - In static dialogue the native update keeps running but leaves `StateData.bMoving`, `bWalking`,
