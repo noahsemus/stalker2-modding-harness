@@ -64,3 +64,11 @@ imports nothing from MCM; an optional `<Mod>MCM` plugin spawns the provider and 
 actor. Open: whether a NewContent Blueprint in one plugin can reference another plugin's class and survive the cook
 (untested; fallback = ship an MCM variant of the whole mod). Compiling needs MCM's interface assets in the kit (its
 source plugin in `<kit>\Stalker2\Mods\`, from the example mod / guide).
+
+### Sleeping Bag Mod (Nexus 1642)
+Its `Config` actor (`/Sleeping_Bag/Config`, instance `Config_C_<n>`) polls the bag-use RTPC
+`/Sleeping_Bag/RTPC/SBM_RTPC_Use` (GameObject value on the player) on tick, resets it, then checks location (shelters
+by default, or within 8 m of the campfires in its own data table) and opens its hours window via the custom event
+`On Widget Init` (callable by name with `K2_SetTimer`). It closes the backpack with `PC.OnBackpackUseEnded`. Do not
+`AddTickPrerequisiteActor` on its actor: four crashes in a UE4SS-hooked Blueprint call. Read its logic with
+`tools/pak/zen_kismet.py`.

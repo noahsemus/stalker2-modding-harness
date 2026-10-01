@@ -76,3 +76,16 @@ Mostly from ImmersiveDialogue 2.0-2.1 (walk in dialogue, arms, gestures) and Imm
   `AnimCollection_pca_bonfire` settings `bShouldLerpToInteractable`, `bShouldToggleFOV`: the sit turns the
   first-person FOV / foreground render off and only its own exit turns it back on
   (`ToggleFOVAndForegroundRender(true)` to restore; otherwise FP items render off-centre and the weapon vanishes).
+- **`Obj.RemoveWeaponFromHands` swaps the stance/arm layer in one frame** (item stance -> empty hands: hips 7.4 cm /
+  19 deg apart). Calling it while a pose of yours is blending in shows as the hips and both hands jumping (probe:
+  hips 8 cm, hands ~30 cm in one frame). Call it only when your full-body pose is fully in.
+- **Every vanilla consumable animation ends by reaching both hands to the weapon-ready pose** (the last 0.1-1.1 s;
+  measured per item from the `AS_fp_*_use` sequences). If the weapon is hidden, that reach looks like grabbing
+  nothing: leave the item (or hold it, `Montage_SetPlayRate` ~0) before its reach.
+- Item animations do not all use `MainActionSlot`: the antirad injector plays in the bh layer's `LeftHand` slot
+  (after MainActionSlot, `left_hand_blend_mask`). Slots in `AnimBP_player_bh` WeaponLayer, in order: MainActionSlot,
+  RightHand / LeftHand (hand masks), CameraSlot, DefaultSlot, then the "Additional" input on the left hand; only
+  `FullBody` in `AnimBP_Player` comes after all of them. Slot groups: MainActionSlot = ActionGroup, LeftHand =
+  DefaultGroup, FullBody = FullBodyGroup (a montage in one group does not stop the others).
+- A dynamic pose-table montage starts at frame 0 unless `InTimeToStartMontageAt` is set: blend it in from the right
+  frame or the first frames blend a wrong pose.
