@@ -68,6 +68,12 @@ AutomationTool is already running"), e.g. while another mod's session is cooking
 | `zzz_<Mod>_30_P.*` | 3103 | dev test pak: beats the Vortex-installed release copy |
 | `_40_P` / `_25_P` | 4103 / 2603 | isolation: beat / lose to another mod that ships `_30_P` |
 
+**The NewContent pak has no dev priority.** With the release also installed (Vortex), both copies of
+`<Mod>Stalker2-Windows-NewContent.*` have the same name and order 3, and the game ran the release's Blueprints: the
+dev pak's override assets changed, its Blueprint logic did not (Campfires 2026-10-01: two test builds "no change",
+the probe showed the old graph's behaviour). Before testing Blueprint changes, have the tester disable the mod in
+Vortex; `install_paktest.ps1` warns when a second copy is present.
+
 Installed to `<game>\Stalker2\Content\Paks\~mods\zzz_<Mod>_PakTest\`. `Content\Paks\` is scanned **recursively**:
 never park disabled paks anywhere under it (`revert_paktest.ps1 -Park` moves them to `<game>\Stalker2\_parked_mods\`).
 Check the mount in `%LOCALAPPDATA%\Stalker2\Saved\Logs\Stalker2.log` (mount lines show the order).

@@ -25,3 +25,10 @@ if (Test-Path "$new\${Mod}Stalker2-Windows-NewContent.utoc") {
 }
 if (-not $n) { throw "nothing staged under $staged (cook first)" }
 Get-ChildItem $dst | Select-Object Name, Length, LastWriteTime | Format-Table -AutoSize
+# A second copy of the NewContent pak (the release installed by Vortex) has the same file name and the same mount
+# order: the game then ran the RELEASE Blueprints, not these (two "no change" test builds, Campfires 2026-10-01).
+$dup = Get-ChildItem $Mods -Recurse -Filter "${Mod}Stalker2-Windows-NewContent.utoc" | Where-Object { $_.DirectoryName -ne $dst }
+if ($dup) {
+    Write-Warning ("Another copy of this mod's NewContent is installed: " + (($dup | ForEach-Object { $_.DirectoryName }) -join ", ") +
+                   ". Its Blueprints load instead of the test build's. Have the tester disable the mod in Vortex (or remove that copy) before testing.")
+}
