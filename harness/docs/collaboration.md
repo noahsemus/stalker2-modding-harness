@@ -21,6 +21,8 @@ because breaking it once cost whole test cycles. "The tester" is the person you 
 - Confirm what "done" refers to ("I tested" vs "edit done") before acting on it.
 - When a guess fails twice, stop guessing and measure (a per-frame burst log found in one run what a day of
   guesses didn't).
+- **Never ask for a probe-only run.** Every run carries the most likely fix; the probe rides along to explain the
+  result if the fix fails. Don't promise "no further run needed" unless it is certain (tester, Campfires 2026-10-01).
 
 ## After a report
 - Read the logs, cfgs and game folder yourself (`docs/diagnostics.md` has the paths).

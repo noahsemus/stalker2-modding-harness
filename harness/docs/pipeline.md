@@ -72,7 +72,10 @@ AutomationTool is already running"), e.g. while another mod's session is cooking
 `<Mod>Stalker2-Windows-NewContent.*` have the same name and order 3, and the game ran the release's Blueprints: the
 dev pak's override assets changed, its Blueprint logic did not (Campfires 2026-10-01: two test builds "no change",
 the probe showed the old graph's behaviour). Before testing Blueprint changes, have the tester disable the mod in
-Vortex; `install_paktest.ps1` warns when a second copy is present.
+Vortex; `install_paktest.ps1` warns when a second copy is present. Check the folder is really gone: after removing
+and re-installing a mod, Vortex can leave the old deployed folder behind (files no longer hardlinked, absent from
+`vortex.deployment*.json`), and disabling the mod then does not remove it. Park such an orphan under
+`<game>\Stalker2\_parked_mods\`.
 
 Installed to `<game>\Stalker2\Content\Paks\~mods\zzz_<Mod>_PakTest\`. `Content\Paks\` is scanned **recursively**:
 never park disabled paks anywhere under it (`revert_paktest.ps1 -Park` moves them to `<game>\Stalker2\_parked_mods\`).

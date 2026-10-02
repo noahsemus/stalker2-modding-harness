@@ -31,6 +31,11 @@ mod learns something about the game itself. Line numbers refer to `<kit>\bp_api_
   interaction target ends the sit itself. Hence "own seated mode": take over after the vanilla sit-in, then
   `ResetInteractionTarget`, clear the flag, `EnableInputAfterInteraction`, `ToggleFOVAndForegroundRender(true)`,
   `DisableInteractions` (hides the seat prompt), and play the pose ourselves.
+- **Saving stays locked after a contextual action the game did not finish itself.** Ending the campfire sit by
+  `ResetInteractionTarget` (and even calling `RestoreStatesAfterInteraction` / `EnableInputAfterInteraction` after)
+  left "can't save now" until a reload; the lock is not in any reflected property of the pawn or controller. Let the
+  sit's own exit run: `SetInteractionTarget(<seat component>)` resumes it, `InjectInputForAction(IA_PlayerCAExit)`
+  at idle exits it (Campfires v1.0.1).
 - The vanilla sit's `SaveStatesBeforeInteraction` is only undone by its own exit (weapon half-state otherwise).
   Calling `SaveStatesBeforeInteraction` / `RestoreStatesAfterInteraction` from a mod stores the weapon (hand type 0)
   but pinned the view pitch at its minimum and left WASD dead after standing: don't.
