@@ -45,6 +45,10 @@
   and remove only that (ImmersiveDialogue 2.0.1: re-adding `IMC_Dialog` after the UI removed it leaked the dialogue
   keys (Q/E/L, pad X/Y/D-pad) into free play until a reload).
 - Two rows with the same key in one context fire both actions.
+- **Check trigger thresholds when copying or overriding a context.** The vanilla `IMC_PlayerCA` mouse-look row
+  (`IA_LookUp` / `Mouse2D`, `InputTriggerDown`) has actuation threshold 0.5, `IMC_Exploration`'s has 0.0: while that
+  context handled the mouse, small slow movements were silently dropped ("laggy camera"). Measure with
+  `PlayerController.GetInputMouseDelta` vs the change of `ControlRotation`, not by feel (Campfires v1.0.2).
 - Input from a mod actor: `EnableInput` + EnhancedInputAction events; the events arrive through the game's own
   `PlayerEnhancedInputComponent`. Binding an action the game's delayable handlers also bind can crash
   (`game-facts.md`, `IA_PlayerCAExit`).
