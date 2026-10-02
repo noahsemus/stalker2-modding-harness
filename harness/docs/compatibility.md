@@ -34,6 +34,9 @@ conflict with every other mod shipping that asset, and whichever loses loses *al
   soft hangs during sequences (sleep).
 - **UObjectCacheMod** (UE4SS Lua): caches objects, rebuilds on transitions; probes must load before it.
 - **Better Vaulting, grEdit**: examples of cfg `_patch_` style mods.
+- **Player Gestures** (Nexus 1674, https://www.nexusmods.com/stalker2heartofchornobyl/mods/1674): has a "sit
+  anywhere". Not yet inspected; users asked Campfires to support its sit (2026-10-02). Scan its paks
+  (`pak/scan_mods.py`, `zen_names.py`) before designing anything.
 
 - **OXA** (Nexus 939): bpatches `WeaponReloadTimePerAttachment` and more for many weapons, adds ~27 weapons with their
   own arrays, `ReloadTime_Minus*` effects on magazines, and **overrides 38 vanilla `AnimCollection_fp_*`** (the
