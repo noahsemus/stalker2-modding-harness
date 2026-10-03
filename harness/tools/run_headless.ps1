@@ -10,7 +10,7 @@ $Mod = Get-ModName $Mod
 $py = "$Kit\Engine\Binaries\ThirdParty\Python3\Win64\python.exe"
 $tmp = "$env:TEMP\harness_headless_$([IO.Path]::GetFileNameWithoutExtension($Script)).py"
 $env:HARNESS_ARGS = ($Arg -join "`n")
-$pre = & $py -c "import os, sys; sys.path.insert(0, r'$PSScriptRoot'); from hconf import prelude; kv = dict(l.split('=', 1) for l in os.environ['HARNESS_ARGS'].splitlines() if '=' in l); print(prelude('$Mod', kv), end='')"
+$pre = & $py -c "import os, sys; sys.path.insert(0, r'$PSScriptRoot'); from hconf import prelude; kv = dict(l.split('=', 1) for l in os.environ.get('HARNESS_ARGS', '').splitlines() if '=' in l); print(prelude('$Mod', kv), end='')"
 [IO.File]::WriteAllText($tmp, ($pre -join "`n") + "`n" + [IO.File]::ReadAllText((Resolve-Path $Script)), (New-Object Text.UTF8Encoding $false))
 $log = "$env:TEMP\harness_headless.log"
 Write-Host "Running $Script headless for $Mod (log: $log) ..."

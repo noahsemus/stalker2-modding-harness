@@ -23,6 +23,16 @@ because breaking it once cost whole test cycles. "The tester" is the person you 
   guesses didn't).
 - **Never ask for a probe-only run.** Every run carries the most likely fix; the probe rides along to explain the
   result if the fix fails. Don't promise "no further run needed" unless it is certain (tester, Campfires 2026-10-01).
+- **Revert a failed attempt before the next one.** Stacking guesses (Campfires builds 93-98: input-mode re-grab,
+  flush, one-frame pause, input delay, detector toggle) leaves risky dead code and blurs what each build tested; the
+  tester rightly called the pause "a band-aid". Ship a workaround only once the cause is known and can't be fixed.
+- **Turn a feel into a number first.** For "laggy" / "drops input" / "jumps", measure input in vs effect out
+  (`docs/diagnostics.md` § Symptom metrics) before guessing; five guesses missed a mouse dead zone that one
+  per-second metric showed at once.
+- **"No change" twice: check the build actually ran** before doubting the logic: the cooked package contains the
+  change (`pak/zen_kismet.py`), and no second copy of the mod is installed (`pipeline.md` § NewContent priority).
+- Nexus user reports are test reports: read them for the exact steps and the workaround they found, and say in the
+  reply which version fixes it.
 
 ## After a report
 - Read the logs, cfgs and game folder yourself (`docs/diagnostics.md` has the paths).

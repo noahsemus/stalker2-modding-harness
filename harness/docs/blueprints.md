@@ -21,6 +21,15 @@ of 20-200 nodes (event graphs and anim graphs).
 Put `NodeComment` labels and comment boxes in the generated text (see `collaboration.md`). Keep mod-specific
 generators in the mod's `zonekit/tools/gen_*.py`; lift reusable node builders into `bp_graph.py` here.
 
+- **Delegate binding pastes fine**: `K2Node_AddDelegate` (`DelegateReference=(MemberParent=<class>,MemberName=...)`,
+  a `Delegate` pin whose `PinSubCategoryMemberReference` names the `..._DelegateSignature` in its package) linked to a
+  `K2Node_CustomEvent` whose parameters come from `CustomProperties UserDefinedPin (PinName=...,PinType=(...),
+  DesiredPinDirection=EGPD_Output)`. Bind once per target object (keep the bound object in a variable and compare).
+  Campfires binds `AnimInstance.OnMontageStarted` this way.
+- **Don't call a custom event of the same graph from pasted text**: the paste asks to "Fix Self Context Function
+  References" and the compile fails ("In use pin no longer exists"). Drive the follow-up from the tick (a flag or a
+  timestamp checked each tick) instead.
+
 Blueprint "Float" variables are doubles. `BlueprintEditorLibrary.add_member_variable` adds variables from Python;
 `reparent_blueprint` reparents; Blueprint graphs themselves cannot be authored from Python (only pasted).
 

@@ -43,6 +43,22 @@
 - If UE4SS.log shows repeated `AOB scan` failures then `Fatal Error`, nothing of ours loaded: a game update needs new
   UE4SS signatures, or AV interference, or a corrupt install. Not a mod bug.
 
+## Property-diff probe (what changed between two moments)
+Snapshot every reflected property (`ForEachPropertyInChain`, bools as 0/1, object refs by name, arrays by count, the
+rest as raw bytes) of the pawn, its controller, their subobject components, plus any manager or world actor you
+suspect (`FindFirstOf` / `FindAllOf` by class name), at a "good" moment and again after the event; log only the
+differences, with noisy names (Location, Rotation, Velocity, Time, Tick, Bounds...) filtered. Gameplay flags often lag
+the animation: take the baseline from a ring of snapshots 6-8 s before the state edge, not the last one. Source:
+Campfires `zonekit/tools/probe/ImmCampProbeCpp` (`TakeSnap`, `LogDiff`, `BagDiff`). Limits, both seen: state kept in
+non-reflected C++ members never shows (the save lock after a sit), and a diff can surface an incidental change that is
+not the cause (a detector reference in `ItemAppearanceComponent.SecondaryItemInHands` after a backpack consumable).
+
+## Symptom metrics
+Measure the symptom itself, per second, before theorising. Mouse look: `PlayerController.GetInputMouseDelta` against
+the change of `ControlRotation` (count samples with a small non-zero delta and no rotation); that found an
+`InputTriggerDown` actuation threshold of 0.5 on a mouse-look row (`input.md`). Look stalls: `bHadCameraInputLastTick`
+/ `LastCameraInput` vs ControlRotation; hitches: `GameplayStatics.GetWorldDeltaSeconds`.
+
 ## Reading a crash without symbols
 The AV address and the log's stack often suffice to name the native function: take the exe base (from UE4SS's
 `ProcessLocalScriptFunction` address and its signature file), function starts from the exe's `.pdata`, and the exec
