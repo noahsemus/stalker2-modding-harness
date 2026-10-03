@@ -27,6 +27,15 @@ Mostly from ImmersiveDialogue 2.0-2.1 (walk in dialogue, arms, gestures) and Imm
   take). **Attach exactly once per world, ~1 s after the pawn appears, outside any dialogue / interaction**, via the
   mesh-swap trick: save hidden bones → override None → `Set Skeletal Mesh Asset` (another mesh) → override = ours →
   mesh back → `ToggleFOVAndForegroundRender(true)` → re-hide the saved bones. Armour changes re-create it.
+  **Disabling it leaves its last frame's notifies firing** (UE 5.5 source): the mesh still calls
+  `DispatchQueuedAnimEvents` on a disabled post-process instance every frame
+  (`ConditionallyDispatchQueuedAnimEvents` has no disabled check) and only an update or `InitializeAnimation`
+  empties its `NotifyQueue`. Switched off on a frame where its walk played a footstep (`AnimNotify_AnyFootOnGround`
+  on the `ar` walk / run sequences), that footstep repeats every frame until it is switched on again
+  (ImmersiveDialogue "nonstop footsteps after a conversation"). Re-enabling (the setter, also behind a `SET
+  bDisablePostProcessBlueprint` node) runs `InitializeAnimation` → `UninitializeAnimation` → `NotifyQueue.Reset`, so
+  one tick after switching it off, switch it on and straight off again. Linked layer instances of it keep being
+  updated (`TickAnimInstances` updates every `LinkedInstances` entry), which resets their own queues.
 - **Dynamic montages in the mod's own slot group** (ImmersiveCampfires): e.g. a looping additive made from a game
   sequence (`AnimSequence` duplicated, tracks rewritten from Python, additive against a reference frame) played in
   `FullBody` with its own slot group so UpperBody/action montages don't cancel it; heal with
