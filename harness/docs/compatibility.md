@@ -72,6 +72,13 @@ source plugin in `<kit>\Stalker2\Mods\`, from the example mod / guide).
 Its `Config` actor (`/Sleeping_Bag/Config`, instance `Config_C_<n>`) polls the bag-use RTPC
 `/Sleeping_Bag/RTPC/SBM_RTPC_Use` (GameObject value on the player) on tick, resets it, then checks location (shelters
 by default, or within 8 m of the campfires in its own data table) and opens its hours window via the custom event
-`On Widget Init` (callable by name with `K2_SetTimer`). It closes the backpack with `PC.OnBackpackUseEnded`. Do not
+`On Widget Init`. It closes the backpack with `PC.OnBackpackUseEnded`. Its location check reads a second RTPC,
+`/Sleeping_Bag/RTPC/SBM_RTPC_Location` (player GameObject value; 0 = nowhere it allows sleep, 1/2/3 = allowed places,
+1 = campfire). To start its sleep from a mod at a place it does not list: set Location = 1 and Use = 1 on the player
+with `AkGameplayStatics.SetRTPCValue` and let its own tick run its use path (window, then sleep); put Location back
+a few seconds later (Campfires v1.0.3). Calling `On Widget Init` by name with `K2_SetTimer` opened its window up to
+Campfires v1.0.0 but silently did nothing from v1.0.1 on; the RTPC route works. Its Blueprint variables with spaces
+in their names are not found by name from UE4SS (`Is Using Widget` etc.); look for its widget class
+`SBM_WSleep_Widget_C` instead. Do not
 `AddTickPrerequisiteActor` on its actor: four crashes in a UE4SS-hooked Blueprint call. Read its logic with
 `tools/pak/zen_kismet.py`.
