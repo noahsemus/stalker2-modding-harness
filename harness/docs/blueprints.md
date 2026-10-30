@@ -95,6 +95,15 @@ Blueprint "Float" variables are doubles. `BlueprintEditorLibrary.add_member_vari
 - A SoftClassProperty only accepts a real class object from Python (`tools/editor/set_bp_default.py`).
 - CDO flags such as `AutoReceiveInput = Player0` on an actor Blueprint can be set from Python.
 
+## Replacing a big graph: never Ctrl+A / Delete it in the editor (ImmersiveLooting 2026-10-30)
+- Deleting a ~3,700-node / 14,000-pin event graph in one go made the editor reach ~118 GB of virtual memory and die
+  ("Ran out of memory ... paging file is too small"), twice; at ~3,400 nodes it still went through.
+- Instead, with editor Python: `EditorAssetLibrary.rename_asset(<BP>, <BP>_Old)` (when its referencers are not
+  loaded, no redirector is written and they keep pointing at the original path), create a fresh Blueprint at the
+  original path with the mod's setup script (variables, defaults, class settings), have the tester delete its 3
+  default event nodes and paste into it, verify the graph, then `delete_asset(<BP>_Old)`. Keep a file copy of the
+  old `.uasset` first.
+
 ## Widgets (UMG) from Python (ImmersiveLooting 2026-10-18)
 - Python cannot edit a Widget Blueprint's tree (`WidgetTree` protected; `WidgetBlueprintFactory.RootWidgetClass`
   protected, a Python-made WBP has no root), and Blueprint cannot `Construct Object` a UWidget
