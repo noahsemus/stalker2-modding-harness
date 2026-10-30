@@ -103,6 +103,9 @@ Blueprint "Float" variables are doubles. `BlueprintEditorLibrary.add_member_vari
   original path with the mod's setup script (variables, defaults, class settings), have the tester delete its 3
   default event nodes and paste into it, verify the graph, then `delete_asset(<BP>_Old)`. Keep a file copy of the
   old `.uasset` first.
+- In practice (3 times) the tester still pasted into `<BP>_Old`: the editor kept serving the renamed asset when the
+  original name was opened. The paste itself is what matters: wherever it lands, finish with the swap back (delete
+  the empty fresh asset, rename `_Old` to the original name, setup script, recompile referencers).
 - **Have the tester close that Blueprint's editor tab BEFORE the rename**: an open tab follows the renamed asset, and
   twice the paste went into `<BP>_Old`. If it did, swap back: delete the empty fresh asset, rename `_Old` to the
   original name, run the setup script again (variables added after the rename are missing on `_Old`), recompile the
