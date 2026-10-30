@@ -33,4 +33,5 @@ PowerShell tools default `-Mod` to `mod.json` "name". Per-user values (paths, Gi
 | `tools/pak/scan_mods.py <Name>...` | shell | which installed mod containers mention an asset, with mount order |
 | `tools/make_release.py X.Y.Z [--downloads]` | shell | release zip from the last cook |
 | `tools/new_mod.ps1`, `sync_harness.ps1`, `push_harness.ps1` | shell | harness lifecycle (`docs/harness-workflow.md`) |
+| `tools/coord.ps1` | shell | several agents on one PC: claim / release shared resources (editor, cook, game, post-process layer), post / read messages (`docs/coordination.md`) |
 | `probe/` | modder's PC only | UE4SS C++/Lua probe examples and build notes |

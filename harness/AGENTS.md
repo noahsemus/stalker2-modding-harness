@@ -16,6 +16,9 @@ never ships.
 - **New user or new machine** (no machine settings file `%LOCALAPPDATA%\stalker2-modding-harness\settings.json`, or `check_setup.ps1` reports problems, or the user asks to be
   set up): follow `docs/setup.md`. Do every step yourself; the user only answers questions and clicks where a program
   insists on a human.
+- **Other agents may be working on this PC at the same time** (one Zone Kit, one game, one tester): run
+  `harness/tools/coord.ps1 -Status` at session start and follow `docs/coordination.md` (claim the editor / cook /
+  game / post-process layer before using them, message the other agents).
 - **In a mod repo**: run `harness/tools/sync_harness.ps1` first (gets harness updates other mods promoted), then read
   the mod's `AGENTS.md` "Current state" so "where were we?" has an answer.
 - **The user wants a new mod**: `docs/harness-workflow.md` § New mod (choose the names with them).
@@ -67,6 +70,7 @@ never ships.
 | Verified game behaviour (native vetoes, flags, functions) | `docs/game-facts.md` |
 | Setting up a new user's machine | `docs/setup.md` |
 | New mod, syncing and promoting the harness | `docs/harness-workflow.md` |
+| Several agents at once: claims, messages, shared resources | `docs/coordination.md` |
 | Tool list | `README.md` (this folder) |
 
 ## Tools in one line each (details in `README.md`)
@@ -74,7 +78,7 @@ never ships.
 `mirror_from_kit.ps1` kit → repo · `deploy_to_kit.ps1` repo → kit · `ue_exec.py` Python in the open editor ·
 `run_headless.ps1` Python in a commandlet · `editor/*.py` asset helpers · `t3d/*.py` Blueprint paste text ·
 `pak/*.py` read cooked/uncooked packages, scan installed mods · `make_release.py` release zip ·
-`setup.ps1` / `check_setup.ps1` machine setup · `new_mod.ps1` / `sync_harness.ps1` / `push_harness.ps1` harness lifecycle.
+`setup.ps1` / `check_setup.ps1` machine setup · `coord.ps1` multi-agent board (claims, messages) · `new_mod.ps1` / `sync_harness.ps1` / `push_harness.ps1` harness lifecycle.
 All PowerShell tools default `-Mod` to `mod.json` "name". Per-user values (kit and game folders, GitHub account) are never in the repo: `harness/config.json` ships them empty, and they come from
 the machine settings `%LOCALAPPDATA%\stalker2-modding-harness\settings.json` (written by `setup.ps1`, shared by every
 repo on the PC) and, rarely, a gitignored `harness/local.json` in one repo. Python = the kit's embedded 3.11
