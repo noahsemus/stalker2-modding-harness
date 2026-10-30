@@ -54,6 +54,13 @@ each cook. The editor's Package Mod edits the kit copy itself.
   (needed for a `ModWorldSubsystem`, `runtime-host.md`) and writes it into OverridePackages.txt. The headless cook
   does not generate it but cooks it once it exists. Press Package Mod once per mod after creating the subsystem.
 - Every game patch may need a re-cook against an updated kit; overrides of changed assets go stale.
+  Game 2.1 (2026-10-30, the kit updated the same day to ProjectVersion 2.1.0): re-cooking unchanged
+  ImmersiveDialogue sources (pawn override, IMC, AnimInstancePlayer-based ABPs, ModWorldSubsystem) in the new kit gave
+  byte-identical packages (one byte differs in the pawn). So 2.1 did not change the cooked layout of those native
+  classes; an old-kit cook of them is not stale by itself. A mod that breaks on a patch then broke on game behaviour or
+  on a changed vanilla asset it overrides. The game's own containers are not encrypted: `UnrealPak <game>\...\
+  pakchunkN-Windows.utoc -List` / `-Extract <dir> -Filter=*Name*` gives the patched vanilla package to diff with
+  `zen_names.py` against the mod's cooked copy; a container whose `.ucas` date predates the patch was not touched.
 
 ## 5. Cook + install
 `powershell -File harness\tools\cook_and_install.ps1 [-Mod X] [-Suffix N]`: RunUAT `GSCCookMod` with
