@@ -5,6 +5,14 @@ Zone Kit install, one game, one `~mods` folder, one tester. Without coordination
 (ImmersiveLooting / ImmersiveDialogue, 2026-10-30: two editors open, `ue_exec.py` found no editor node; both mods
 use the player mesh's single post-process anim layer).
 
+## The tester tests everything together (read first)
+- The tester plays with ALL their mods installed and tests every agent's build in ONE game run. Their mods must be
+  compatible with each other at all times, dev builds included. Never ask for separate runs per mod, and never ask
+  them to disable another of their mods for your test. Merge the test lists instead (see `game` below).
+- So a dev-only tool may not take an exclusive resource another installed mod uses (e.g. the player mesh's single
+  post-process anim layer, which ImmersiveDialogue owns). Find a route that coexists (ImmersiveLooting 2026-10-30: its
+  F7 tuning panel moved from a post-process layer to a dynamic montage in `CutsceneSlot`, a slot group no mod uses).
+
 ## Session start
 1. Look for other agents: `powershell -File harness\tools\coord.ps1 -Status` (claims + recent messages). Agents with
    live messaging (Claude Code: `ListAgents`, then `SendMessage` to the peer's name) also check that list.
@@ -16,8 +24,8 @@ use the player mesh's single post-process anim layer).
 |---|---|---|
 | `editor` | the open Zone Kit editor: `ue_exec.py`, asking the tester to paste / click / save | one editor open at a time; a second editor breaks `ue_exec.py`'s node discovery |
 | `cook` | `cook_and_install.ps1`, `run_headless.ps1`, `CreatePlainMod` | AutomationTool runs one instance per PC (`Wait-UatFree` waits); `cook_and_install.ps1` claims / releases `cook` itself |
-| `game` | asking the tester for a test run; installing / reverting dev paks while the game may start | one test run at a time, so a run tests one agent's change |
-| `postprocess-layer` | anything that attaches a post-process anim BP to the player mesh | only ONE mod can own it; tell the tester which mods to disable in Vortex for the run |
+| `game` | installing / reverting dev paks, and the timing of the tester's next run | ONE run tests every agent's current build: whoever asks for the run first collects the other agents' test steps (message them) and sends the tester one merged list |
+| `postprocess-layer` | anything that attaches a post-process anim BP to the player mesh | only ONE mod can own it (ImmersiveDialogue does): no other mod, dev builds included, may use it |
 | `tester` | asking the tester questions / long instructions | optional: avoids two agents talking to them at once |
 
 `coord.ps1 -Claim <res> -Note "<why>"` exits 2 when another agent holds it (not stale: claims expire after 2 h);
