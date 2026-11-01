@@ -24,7 +24,7 @@ if ($base -eq $new -and -not $local) { Write-Host "Harness already at $($new.Sub
 git restore --source=harness/main --staged --worktree -- harness
 # restore leaves untracked new files alone; remove any that are not upstream (local.json is gitignored and kept)
 git clean -q -f -- harness
-[IO.File]::WriteAllText("$Repo\.harness-sync", "$new`n", (New-Object Text.UTF8Encoding $false))
+[IO.File]::WriteAllText((Join-Path $Repo ".harness-sync"), "$new`n", (New-Object Text.UTF8Encoding $false))
 git add .harness-sync harness
 Write-Host "Harness $($base.Substring(0,7)) -> $($new.Substring(0,7)):"
 git log --oneline "$base..$new" -- harness

@@ -4,6 +4,8 @@ The user may never have used a terminal, Git or a mod editor. Do every step your
 questions and does the few things a program insists a human does (install from the Epic launcher, approve a GitHub
 login in the browser). Explain each human step in one or two plain sentences, one at a time. Commands below are
 PowerShell; run `.ps1` tools as `powershell -ExecutionPolicy Bypass -File <path>`.
+**On Linux** do `linux-proton.md` § Setup first (Heroic for the Zone Kit, Steam + Proton for the game, `pwsh`), then
+continue here from step 3 with `pwsh -File harness/tools/<tool>.ps1`.
 
 ## 0. Where are we?
 - If the harness is not on disk yet: pick a projects folder with the user (default `%USERPROFILE%\Documents`), then

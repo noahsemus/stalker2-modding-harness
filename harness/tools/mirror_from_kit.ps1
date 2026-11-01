@@ -2,7 +2,7 @@
 # classifier lists. Run after every editor save the tester reports, before any cook, and before committing.
 # Usage:  powershell -File harness\tools\mirror_from_kit.ps1 [-Mod X] [-WhatIf]
 # Copies .uplugin, Content\ and Resources\ only (never Intermediate\ / Saved\). Files deleted in the kit are deleted in
-# the repo copy too (robocopy /MIR), so the repo matches what will cook.
+# the repo copy too (robocopy /MIR; rsync --delete on Linux), so the repo matches what will cook.
 param([string]$Mod, [switch]$WhatIf)
 . "$PSScriptRoot\common.ps1"
 Assert-Setup kit
@@ -10,12 +10,10 @@ $Mod = Get-ModName $Mod
 $src = "$Kit\Stalker2\Mods\$Mod"
 $dst = "$Repo\zonekit\$Mod"
 if (-not (Test-Path "$src\$Mod.uplugin")) { throw "no plugin at $src" }
-$flags = @("/NJH", "/NJS", "/NP", "/NDL")
-if ($WhatIf) { $flags += "/L" }
 New-Item -ItemType Directory -Force $dst | Out-Null
 Copy-Item "$src\$Mod.uplugin" "$dst\$Mod.uplugin" -Force -WhatIf:$WhatIf
 foreach ($d in "Content", "Resources") {
-    if (Test-Path "$src\$d") { robocopy "$src\$d" "$dst\$d" /MIR @flags | Where-Object { $_.Trim() } }
+    if (Test-Path "$src\$d") { Sync-Dir "$src\$d" "$dst\$d" -WhatIf:$WhatIf }
 }
 $kitCls = "$Kit\Stalker2\SavedMods\PackageClassifier\$Mod"
 if (Test-Path $kitCls) {

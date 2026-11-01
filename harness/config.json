@@ -1,5 +1,5 @@
 {
-  "_comment": "Generic defaults only; nothing about any one user belongs here. Per-user values (kit, game, github_owner, harness_remote_url, ue4ss_source) are detected by harness/tools/setup.ps1 and stored outside the repo in %LOCALAPPDATA%/stalker2-modding-harness/settings.json (same keys). harness_remote_url defaults to the github_owner's fork.",
+  "_comment": "Generic defaults only; nothing about any one user belongs here. Per-user values (kit, game, github_owner, harness_remote_url, ue4ss_source; on Linux also wine, kit_prefix, game_prefix) are detected by harness/tools/setup.ps1 and stored outside the repo in %LOCALAPPDATA%/stalker2-modding-harness/settings.json (Linux: ~/.config/stalker2-modding-harness/settings.json; same keys). harness_remote_url defaults to the github_owner's fork.",
   "kit": "",
   "game": "",
   "github_owner": "",
@@ -7,5 +7,8 @@
   "upstream_url": "https://github.com/noahsemus/stalker2-modding-harness.git",
   "harness_clone": "../stalker2-modding-harness",
   "ue4ss_source": "",
+  "wine": "",
+  "kit_prefix": "",
+  "game_prefix": "",
   "downloads": "~/Downloads"
 }
