@@ -45,6 +45,9 @@ Remove an element: `PreinstalledUpgrades : struct.begin {bpatch}` / `[0] : remov
 **New prototypes** (new effects, items, quest nodes): plain `.cfg` files in the mod's
 `Content/GameLite/ModGameData/<Mod>/<Type>/` (loaded through the GameFeatureData's AddConfigsPath; PIR, ZST, Sleeping
 Bag do this), inheriting with `{refurl=../EffectPrototypes.cfg; refkey=[0]}` or `{refkey=[0]}`.
+A relative `refurl` resolves inside its own config mount: from `ModGameData/<Mod>/EffectPrototypes/X.cfg`,
+`../EffectPrototypes.cfg` reached nothing in one cook (no warning, then `EnsureNoEntryChildNotExist` errors), and
+`{refurl=@BaseGame/EffectPrototypes.cfg; refkey=...}` fixed it. Details: `cfg-reference.md` § Inheritance.
 
 **Per-field last-wins.** Two mods bpatching the same field of the same prototype: the later-loaded wins that field
 only; different fields in the same file coexist (e.g. grEdit recoil + OXA reload arrays).
