@@ -75,6 +75,7 @@ prefix there, and `powershell -File harness\tools\x.ps1` becomes `pwsh -File har
 | Setting up a new user's machine | `docs/setup.md` |
 | New mod, syncing and promoting the harness | `docs/harness-workflow.md` |
 | Several agents at once: claims, messages, shared resources | `docs/coordination.md` |
+| Agent skills (run **only when the tester invokes one**, e.g. `/adversarial-review`: a fresh-subagent review loop of a generated build) | `skills/<name>/SKILL.md` |
 | Linux: Proton setup, Wine paths, cook under Proton | `docs/linux-proton.md` |
 | cfg loader rules: patch merging, inheritance across mounts, arrays, SIDs, quest-node graph behaviour | `docs/cfg-reference.md` |
 | Vanilla data systems: armor, NPC appearance, item generators, ranks, upgrades, lairs, faction war, mod detection | `docs/gameplay-data.md` |
@@ -95,7 +96,8 @@ prefix there, and `powershell -File harness\tools\x.ps1` becomes `pwsh -File har
 `mirror_from_kit.ps1` kit → repo · `deploy_to_kit.ps1` repo → kit · `ue_exec.py` Python in the open editor ·
 `run_headless.ps1` Python in a commandlet · `editor/*.py` asset helpers · `t3d/*.py` Blueprint paste text ·
 `pak/*.py` read cooked/uncooked packages, scan installed mods · `make_release.py` release zip ·
-`setup.ps1` / `check_setup.ps1` machine setup · `coord.ps1` multi-agent board (claims, messages) · `new_mod.ps1` / `sync_harness.ps1` / `push_harness.ps1` harness lifecycle.
+`setup.ps1` / `check_setup.ps1` machine setup · `coord.ps1` multi-agent board (claims, messages) · `new_mod.ps1` / `sync_harness.ps1` / `push_harness.ps1` harness lifecycle · `install_skills.ps1` copies
+`harness/skills/*` to the repo's `.claude/skills/` (run by sync and new mod; edit the harness copy, never the installed one).
 `saves/s2sav.py` save files · `audio/*.py` WAAPI + Wwise project trim · `voice/*.py` voiceover probes and lip-sync ·
 `editor/socket_paste.py` socket paste text · `re/*.py` exe and PDB queries.
 All PowerShell tools default `-Mod` to `mod.json` "name". Per-user values (kit and game folders, GitHub account) are never in the repo: `harness/config.json` ships them empty, and they come from

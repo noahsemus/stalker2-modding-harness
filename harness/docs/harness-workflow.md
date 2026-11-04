@@ -11,6 +11,7 @@ never edited independently. Mod repos are created from the harness and keep it a
 | `harness/local.json` | this repo on this PC | rare per-repo override (gitignored) |
 | `AGENTS.md`, `CLAUDE.md` / `GEMINI.md` shims, `mod.json`, `PLAN.md`, `BUILD.md`, `README.md`, `zonekit/**`, `.gitignore` | the mod | normal commits |
 | `.harness-sync` | tools | the upstream commit `harness/` was last synced to |
+| `.claude/skills/<name>/` with a `.from-harness` marker | copies of `harness/skills/` | `install_skills.ps1` (run by sync / new mod); edit `harness/skills/` and promote |
 
 The mod's `AGENTS.md` tells any agent to read `harness/AGENTS.md` first; `CLAUDE.md` / `GEMINI.md` import both for
 tools that read those names instead. So every session in every mod, with any agent, loads the shared rules.

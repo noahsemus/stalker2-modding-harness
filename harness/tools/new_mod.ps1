@@ -66,6 +66,7 @@ try {
         & "$dest\harness\tools\mirror_from_kit.ps1" -Mod $Name | Out-Null
     }
 
+    & "$dest\harness\tools\install_skills.ps1" | Out-Null   # the harness's agent skills -> .claude/skills
     git add -A
     git commit -q -m "Create $Name from stalker2-modding-harness $($sha.Substring(0,7))"
     if (-not $NoGitHub) {
