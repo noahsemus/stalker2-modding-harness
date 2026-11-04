@@ -10,16 +10,16 @@ $src = "$Repo\zonekit\$Mod"
 $dst = "$Kit\Stalker2\Mods\$Mod"
 if (-not (Test-Path "$src\$Mod.uplugin")) { throw "no plugin in the repo at $src" }
 if ((Test-Path $dst) -and -not $Force) {
-    $newer = Get-ChildItem $dst -Recurse -File | Where-Object { $_.FullName -notmatch '\\(Intermediate|Saved)\\' } | ForEach-Object {
+    $newer = Get-ChildItem $dst -Recurse -File | Where-Object { $_.FullName -notmatch '[\\/](Intermediate|Saved)[\\/]' } | ForEach-Object {
         $rel = $_.FullName.Substring($dst.Length)
-        $r = Get-Item "$src$rel" -ErrorAction SilentlyContinue
+        $r = Get-Item (ConvertTo-NativePath "$src$rel") -ErrorAction SilentlyContinue
         if (-not $r -or $_.LastWriteTime -gt $r.LastWriteTime.AddSeconds(2)) { $rel }
     }
     if ($newer) { Write-Host "Kit copy has newer or extra files (mirror them first, or pass -Force):"; $newer | ForEach-Object { "  $_" }; exit 1 }
 }
 New-Item -ItemType Directory -Force $dst | Out-Null
 Copy-Item "$src\$Mod.uplugin" $dst -Force
-foreach ($d in "Content", "Resources") { if (Test-Path "$src\$d") { robocopy "$src\$d" "$dst\$d" /MIR /NJH /NJS /NP /NDL | Out-Null } }
+foreach ($d in "Content", "Resources") { if (Test-Path "$src\$d") { Sync-Dir "$src\$d" "$dst\$d" -Quiet } }
 $cls = "$Repo\zonekit\tools\classifier\$Mod"
 if (Test-Path $cls) {
     New-Item -ItemType Directory -Force "$Kit\Stalker2\SavedMods\PackageClassifier\$Mod" | Out-Null

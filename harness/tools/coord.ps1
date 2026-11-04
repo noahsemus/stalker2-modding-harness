@@ -1,7 +1,8 @@
 # Coordination board for several agents (any tool) working on this PC at once: one Zone Kit, one game, one tester.
 # The board lives next to the machine settings, so every repo / session sees the same one:
-#   %LOCALAPPDATA%\stalker2-modding-harness\coord\claims.json   who holds which shared resource
-#   %LOCALAPPDATA%\stalker2-modding-harness\coord\board.log     append-only messages between agents
+#   <machine settings folder>\coord\claims.json   who holds which shared resource
+#   <machine settings folder>\coord\board.log     append-only messages between agents
+# (%LOCALAPPDATA%\stalker2-modding-harness on Windows, ~/.config/stalker2-modding-harness on Linux)
 # Usage:
 #   coord.ps1 -Status                          claims (stale after 2 h) + the last 15 messages
 #   coord.ps1 -Claim editor -Note "pasting BP" take a resource (exit 2 if another agent holds it; -Force to take over)
@@ -12,7 +13,7 @@
 param([string]$Claim, [string]$Release, [switch]$Status, [string]$Post, [int]$Read = 0, [string]$Note = "",
       [string]$Agent, [switch]$Force, [string]$Mod)
 . "$PSScriptRoot\common.ps1"
-$Dir = "$env:LOCALAPPDATA\stalker2-modding-harness\coord"
+$Dir = Join-Path $HarnessHome "coord"
 New-Item -ItemType Directory -Force $Dir | Out-Null
 $ClaimsFile = "$Dir\claims.json"
 $LogFile = "$Dir\board.log"

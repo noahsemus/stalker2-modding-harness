@@ -11,10 +11,14 @@ Edit `harness/` only for knowledge that holds for any Stalker 2 mod, and then pr
 The game is **S.T.A.L.K.E.R. 2: Heart of Chornobyl** (Unreal Engine 5.5, game patch 2.0.x). Mods are built in the
 official **Zone Kit** (GSC's UE 5.5 mod editor) and ship as **paks only**. UE4SS is a dev-box diagnostic tool and
 never ships.
+**Linux**: the kit and the game run under Proton, the tools under `pwsh` (PowerShell 7) and `python3`; read
+`docs/linux-proton.md` first. Paths written `%LOCALAPPDATA%\Stalker2\...` in these docs live in the game's Proton
+prefix there, and `powershell -File harness\tools\x.ps1` becomes `pwsh -File harness/tools/x.ps1`.
 
 ## Session start
-- **New user or new machine** (no machine settings file `%LOCALAPPDATA%\stalker2-modding-harness\settings.json`, or `check_setup.ps1` reports problems, or the user asks to be
-  set up): follow `docs/setup.md`. Do every step yourself; the user only answers questions and clicks where a program
+- **New user or new machine** (no machine settings file `%LOCALAPPDATA%\stalker2-modding-harness\settings.json`
+  (Linux: `~/.config/stalker2-modding-harness/settings.json`), or `check_setup.ps1` reports problems, or the user asks to be
+  set up): follow `docs/setup.md` (Linux: `docs/linux-proton.md` § Setup first). Do every step yourself; the user only answers questions and clicks where a program
   insists on a human.
 - **Other agents may be working on this PC at the same time** (one Zone Kit, one game, one tester): run
   `harness/tools/coord.ps1 -Status` at session start and follow `docs/coordination.md` (claim the editor / cook /
@@ -71,6 +75,19 @@ never ships.
 | Setting up a new user's machine | `docs/setup.md` |
 | New mod, syncing and promoting the harness | `docs/harness-workflow.md` |
 | Several agents at once: claims, messages, shared resources | `docs/coordination.md` |
+| Linux: Proton setup, Wine paths, cook under Proton | `docs/linux-proton.md` |
+| cfg loader rules: patch merging, inheritance across mounts, arrays, SIDs, quest-node graph behaviour | `docs/cfg-reference.md` |
+| Vanilla data systems: armor, NPC appearance, item generators, ranks, upgrades, lairs, faction war, mod detection | `docs/gameplay-data.md` |
+| Voiced dialog lines, lip-sync face anims, dialog gestures | `docs/dialog-voiceover.md` |
+| Localized text: `.locres`, key prefixes, how a mod ships or overrides text | `docs/localization.md` |
+| Wwise: project layout, WAAPI, SoundBanks, licence, shipping audio | `docs/audio-wwise.md` |
+| Paste text for sockets and AnimCollection maps (non-Blueprint editor paste) | `docs/editor-paste.md` |
+| Where cook time goes, override-only cook, repack without the editor | `docs/cook-performance.md` |
+| Save files: format, unpack/repack, the 65,535 quest-node name limit | `docs/saves.md` |
+| Game console commands and which ones are dangerous | `docs/console-commands.md` |
+| Reading the retail exe: UHT data, vtables, constants, stale PDBs | `docs/reverse-engineering.md` |
+| Damage formula, armor, NPC corpse looting (retail exe) | `docs/combat.md` |
+| Xbox build requests, GSC bug reports, mod.io | `docs/console-and-bug-reports.md` |
 | Tool list | `README.md` (this folder) |
 
 ## Tools in one line each (details in `README.md`)
@@ -79,10 +96,13 @@ never ships.
 `run_headless.ps1` Python in a commandlet · `editor/*.py` asset helpers · `t3d/*.py` Blueprint paste text ·
 `pak/*.py` read cooked/uncooked packages, scan installed mods · `make_release.py` release zip ·
 `setup.ps1` / `check_setup.ps1` machine setup · `coord.ps1` multi-agent board (claims, messages) · `new_mod.ps1` / `sync_harness.ps1` / `push_harness.ps1` harness lifecycle.
+`saves/s2sav.py` save files · `audio/*.py` WAAPI + Wwise project trim · `voice/*.py` voiceover probes and lip-sync ·
+`editor/socket_paste.py` socket paste text · `re/*.py` exe and PDB queries.
 All PowerShell tools default `-Mod` to `mod.json` "name". Per-user values (kit and game folders, GitHub account) are never in the repo: `harness/config.json` ships them empty, and they come from
 the machine settings `%LOCALAPPDATA%\stalker2-modding-harness\settings.json` (written by `setup.ps1`, shared by every
 repo on the PC) and, rarely, a gitignored `harness/local.json` in one repo. Python = the kit's embedded 3.11
-(`<kit>\Engine\Binaries\ThirdParty\Python3\Win64\python.exe`); no separate Python install is needed.
+(`<kit>\Engine\Binaries\ThirdParty\Python3\Win64\python.exe`); no separate Python install is needed (Linux: the
+system `python3`).
 
 ## Keeping knowledge where it belongs
 - A fact about the game, the kit, the pipeline, another mod, or how to work with the tester → `harness/docs/`,

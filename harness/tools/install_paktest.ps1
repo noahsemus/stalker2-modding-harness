@@ -13,7 +13,7 @@ if (Test-GameRunning) { throw "game is running" }
 $staged = "$Kit\Stalker2\SavedMods\Staged\$Mod\Windows"
 $ovr = "$staged\OverrideContent\Windows\Stalker2\Mods\$Mod\Content\Paks\Windows"
 $new = "$staged\NewContent\Windows\Stalker2\Mods\$Mod\Content\Paks\Windows"
-$dst = "$Mods\zzz_${Mod}_PakTest"
+$dst = ConvertTo-NativePath "$Mods\zzz_${Mod}_PakTest"
 New-Item -ItemType Directory -Force $dst | Out-Null
 Remove-Item "$dst\*" -Force -ErrorAction SilentlyContinue
 $n = 0

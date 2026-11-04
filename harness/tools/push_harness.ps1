@@ -12,7 +12,7 @@ $base = (Get-Content "$Repo\.harness-sync" -Raw).Trim()
 if (-not (git remote | Select-String -Quiet '^harness$')) { git remote add harness $Cfg.harness_remote_url }
 git fetch -q harness main   # makes sure the base commit is present locally
 git add -A harness
-$patch = "$env:TEMP\harness_promote.patch"
+$patch = Join-Path $Temp "harness_promote.patch"
 git diff --cached --binary "--output=$patch" $base -- harness
 if ((Get-Item $patch).Length -eq 0) { Write-Host "No harness changes to promote."; exit 0 }
 git diff --cached --stat $base -- harness

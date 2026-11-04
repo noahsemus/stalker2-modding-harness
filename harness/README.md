@@ -6,6 +6,9 @@ Shared agent instructions, knowledge and tools for S.T.A.L.K.E.R. 2 Zone Kit mod
 
 ## Tools
 Python = the kit's embedded interpreter `<kit>\Engine\Binaries\ThirdParty\Python3\Win64\python.exe`.
+**Linux** ([docs/linux-proton.md](docs/linux-proton.md)): the same tools run under PowerShell 7 (`pwsh -File harness/tools/<tool>.ps1`) and the system
+`python3`; Windows programs (RunUAT, the editor, UnrealPak) go through Proton's `wine` in the kit's prefix (`Invoke-Win` in `common.ps1`),
+and the machine settings live in `~/.config/stalker2-modding-harness/settings.json` with three more keys (`wine`, `kit_prefix`, `game_prefix`).
 PowerShell tools default `-Mod` to `mod.json` "name". Per-user values (paths, GitHub account) live outside the repo: `config.json` has only generic defaults, overridden by the machine settings `%LOCALAPPDATA%\stalker2-modding-harness\settings.json` (written by `setup.ps1`) < gitignored `harness/local.json`.
 
 | Tool | Runs | Does |
@@ -32,6 +35,14 @@ PowerShell tools default `-Mod` to `mod.json` "name". Per-user values (paths, Gi
 | `tools/pak/extract_from_pak.py` | shell | single uncooked assets out of the kit's editor pak by index offset |
 | `tools/pak/scan_mods.py <Name>...` | shell | which installed mod containers mention an asset, with mount order |
 | `tools/make_release.py X.Y.Z [--downloads]` | shell | release zip from the last cook |
+| `tools/saves/s2sav.py list\|unpack\|names\|pack\|strings\|diff` | shell | save files: Oodle unpack/repack, quest-node name count vs the 65,535 limit (`docs/saves.md`) |
+| `tools/audio/waapi.py <uri> [args]` | shell → Wwise | WAAPI calls over HTTP (`docs/audio-wwise.md`) |
+| `tools/audio/wwise_trim.py <src> <dst> --keep {GUID}` | shell | trial-licence-sized copy of a Wwise project for bank generation |
+| `tools/editor/socket_paste.py <SKEL.uasset> [--baseline]` | shell | skeleton sockets as editor paste text, or recover a mod's sockets (`docs/editor-paste.md`) |
+| `tools/voice/probe_voiceover_keys.py`, `dump_face_anim.py` | open editor | read-only voiceover key / face anim dumps (`docs/dialog-voiceover.md`) |
+| `tools/voice/fit_lipsync.py`, `create_face_anims.py` | shell (numpy) / open editor | lip-sync face anims for new voice lines |
+| `tools/voice/dialog_runtime_probe.py` | shell, game running | read-only check of the game's merged voiceover maps |
+| `tools/re/pe.py`, `pdbq.py` | shell | retail exe address helper; stale-PDB name queries (`docs/reverse-engineering.md`) |
 | `tools/new_mod.ps1`, `sync_harness.ps1`, `push_harness.ps1` | shell | harness lifecycle (`docs/harness-workflow.md`) |
 | `tools/coord.ps1` | shell | several agents on one PC: claim / release shared resources (editor, cook, game, post-process layer), post / read messages (`docs/coordination.md`) |
 | `probe/` | modder's PC only | UE4SS C++/Lua probe examples and build notes |

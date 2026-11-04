@@ -38,14 +38,14 @@ try {
               "LOG.md" = "zonekit\README.md"; "gitignore" = ".gitignore" }
     New-Item -ItemType Directory -Force "zonekit\$Name", "zonekit\tools\classifier\$Name", "zonekit\builds" | Out-Null
     foreach ($t in $map.Keys) {
-        [IO.File]::WriteAllText("$dest\$($map[$t])", (Fill ([IO.File]::ReadAllText("$dest\harness\templates\$t"))), $utf8)
+        [IO.File]::WriteAllText((ConvertTo-NativePath "$dest\$($map[$t])"), (Fill ([IO.File]::ReadAllText((ConvertTo-NativePath "$dest\harness\templates\$t")))), $utf8)
     }
     $mod = [ordered]@{ name = $Name; short = $Short; repo = $here; description = $Description;
                        release_pak_suffix = 20; dev_pak_suffix = 30; nexus_id = $null; optional_plugins = @() }
-    [IO.File]::WriteAllText("$dest\mod.json", ($mod | ConvertTo-Json -Depth 4), $utf8)
-    foreach ($f in "OverridePackages.txt", "NewPackages.txt") { [IO.File]::WriteAllText("$dest\zonekit\tools\classifier\$Name\$f", "", $utf8) }
-    [IO.File]::WriteAllText("$dest\zonekit\builds\.gitkeep", "", $utf8)
-    [IO.File]::WriteAllText("$dest\.harness-sync", "$sha`n", $utf8)
+    [IO.File]::WriteAllText((ConvertTo-NativePath "$dest\mod.json"), ($mod | ConvertTo-Json -Depth 4), $utf8)
+    foreach ($f in "OverridePackages.txt", "NewPackages.txt") { [IO.File]::WriteAllText((ConvertTo-NativePath "$dest\zonekit\tools\classifier\$Name\$f"), "", $utf8) }
+    [IO.File]::WriteAllText((ConvertTo-NativePath "$dest\zonekit\builds\.gitkeep"), "", $utf8)
+    [IO.File]::WriteAllText((ConvertTo-NativePath "$dest\.harness-sync"), "$sha`n", $utf8)
 
     # 3. Zone Kit plugin
     if (-not $NoKit) {
@@ -53,15 +53,16 @@ try {
         if (-not (Test-Path "$plug\$Name.uplugin")) {
             Wait-UatFree
             Write-Host "Creating the Zone Kit plugin (GSCCreatePlainMod) ..."
-            & "$Kit\Engine\Build\BatchFiles\RunUAT.bat" GSCCreatePlainMod "-Project=$Uproject" "-ModName=$Name" *> "$env:TEMP\${Name}_create.log"
-            if (-not (Test-Path "$plug\$Name.uplugin")) { throw "plugin not created; see $env:TEMP\${Name}_create.log" }
+            $createLog = Join-Path $Temp "${Name}_create.log"
+            Invoke-Win "$Kit\Engine\Build\BatchFiles\RunUAT.bat" @("GSCCreatePlainMod", "-Project=$Uproject", "-ModName=$Name") *> $createLog
+            if (-not (Test-Path "$plug\$Name.uplugin")) { throw "plugin not created; see $createLog" }
         }
         $u = Get-Content "$plug\$Name.uplugin" -Raw | ConvertFrom-Json
         $want = [ordered]@{ FriendlyName = $Name; Description = $Description; Category = "Game Features"; CreatedBy = $Cfg.github_owner;
                             EnabledByDefault = $true; CanContainContent = $true; ExplicitlyLoaded = $true;
                             BuiltInInitialFeatureState = "Registered"; Mod = $true }
         foreach ($k in $want.Keys) { $u | Add-Member -Force -NotePropertyName $k -NotePropertyValue $want[$k] }
-        [IO.File]::WriteAllText("$plug\$Name.uplugin", ($u | ConvertTo-Json -Depth 8), $utf8)
+        [IO.File]::WriteAllText((ConvertTo-NativePath "$plug\$Name.uplugin"), ($u | ConvertTo-Json -Depth 8), $utf8)
         & "$dest\harness\tools\mirror_from_kit.ps1" -Mod $Name | Out-Null
     }
 

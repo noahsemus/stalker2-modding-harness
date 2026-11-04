@@ -30,7 +30,9 @@ After setup you never type commands. You talk in plain language.
 ## Get started
 
 You need a **Windows PC with the game installed**, about **600 GB of free disk space** for the Zone Kit, and an
-**AI coding agent** with a plan that lets it work on your computer.
+**AI coding agent** with a plan that lets it work on your computer. **Linux** works too: the game runs with Steam's
+Proton and the Zone Kit with the Heroic Games Launcher; the agent follows
+[harness/docs/linux-proton.md](harness/docs/linux-proton.md).
 
 1. **Install the Zone Kit** (the one thing the agent can't do for you): open the **Epic Games Store**, search for
    **S.T.A.L.K.E.R. 2 Zone Kit**, install it, start it once and let it finish its first start (it takes a long time).
