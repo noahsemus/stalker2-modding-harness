@@ -33,6 +33,10 @@ Verified with ImmersiveDialogue 2.0.0-2.1.1 and ImmersiveCampfires (2026-09-13 â
 line (`/<Mod>/Runtime/BP_X`, `/<Mod>/_Stalker_2/data/input/InputMappingContexts/IMC_X`). The repo mirror is
 `zonekit/tools/classifier/<Mod>/`; `cook_and_install.ps1` seeds the kit copy if missing and mirrors it back after
 each cook. The editor's Package Mod edits the kit copy itself.
+Every asset in the plugin's `Content` is cooked and shipped, listed or not: one missing from `NewPackages.txt` lands
+in the OVERRIDE container (ImmersiveLooting 1.3.2: four dev-only assets made it 614 KB instead of 1 KB). Before a
+release, delete dev / unused assets from the kit (the asset registry's referencers show what nothing uses; assets
+loaded by a path string or a soft class path have no referencers, so check those by hand) and from both lists.
 
 ## 4. Cook rules (each verified by extracting the staged containers and reading imports with `zen_names.py`)
 - `GSCCookMod` runs two passes ~2 min apart: `-modcooknewcontent` (NewPackages) and `-modcookoverridecontent
