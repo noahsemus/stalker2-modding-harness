@@ -15,6 +15,12 @@ of 20-200 nodes (event graphs and anim graphs).
 3. Put it on the clipboard (`Set-Clipboard -Value (Get-Content <file> -Raw)`), the tester clicks into the graph and
    presses Ctrl+V, then wires only the 1-3 pins that connect to nodes outside the block. **Links to nodes that are
    not in the paste are dropped**, so keep external wiring minimal and name those pins exactly.
+   **Asset defaults (`DefaultObject="/Mod/.../AS_X.AS_X"`) resolve only for assets loaded in the editor at paste
+   time**; an unloaded one is dropped silently (empty pin, compiles fine). Assets you just built with editor Python
+   get garbage-collected once nothing references them (Looting 2026-11-04: 28 new animations came through empty;
+   the ones the Blueprint already referenced were fine). Before handing over a paste with new asset references,
+   load them and hold them from the editor's Python (`builtins._keep = [unreal.load_asset(p) for p in paths]` via
+   `ue_exec.py`; the interpreter persists), and after the save check the export for each `DefaultObject`.
 4. They compile and save; read it back with `export_t3d.py` to verify (the export lists deleted-but-not-GC'd nodes
    too: trust each graph's `Nodes(n)` list).
 
