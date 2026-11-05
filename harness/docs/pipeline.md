@@ -118,7 +118,11 @@ never-saved temp asset crashes the commandlet: leave it unsaved instead.
 5. `revert_paktest.ps1` (game closed) so the tester plays on the Vortex copy, and switch the mod's UE4SS dev probe off
    (`<game>\Stalker2\Binaries\Win64\ue4ss\Mods\mods.txt`: `<Probe> : 0`). A probe left on kept reading the mod's
    actor every 50 ms after the release and crashed the game inside UE4SS (ImmersiveLooting 1.3.1, twice in 6 min,
-   `EXCEPTION_ACCESS_VIOLATION`, call stack starting in UE4SS). Say both were done.
+   `EXCEPTION_ACCESS_VIOLATION`, call stack starting in UE4SS). `: 0` alone does not hold: Vortex's "UE4SS Load
+   Order" tab lists the probe as a manual mod and rewrote it to `: 1` after the 1.3.2 release, and the same crash
+   came back (AV reading 0x418, UE4SS frames only). So park the probe folder outside `Mods`
+   (`%LOCALAPPDATA%\stalker2-modding-harness\parked\<Probe>`; copy it back for the next logged run) as well. Say both
+   were done.
 
 Vortex (STALKER 2 HoC extension, Nexus 958): installs pak mods into `~mods`; disabling a mod in Vortex deletes its
 deployed folder; deployed files are hardlinks into Vortex staging (copying over them overwrites staging too). For
