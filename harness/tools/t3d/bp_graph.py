@@ -399,7 +399,7 @@ class Graph:
         event on the target page (one per target node; calls run synchronously, so execution order is unchanged).
         A pure node needed on several pages is cloned onto each, with its pure input tree. A data link from an exec
         node's output to another page cannot be split: it raises (keep both ends on one page, or pass the value
-        through a variable). Comment boxes go to the page holding most of their exec nodes.
+        through a variable). Pure nodes nobody reads are dropped. Comment boxes go to the page holding most of their exec nodes.
         Returns {page: Graph} in the order of roots (default first)."""
         from bp_t3d import TGT as _TGT
         is_exec = self._is_exec
@@ -430,7 +430,7 @@ class Graph:
                     for q in p.links:
                         if id(q.node) not in path:
                             s |= needed(q.node, path + (id(n),))
-            need[id(n)] = s or {default}
+            need[id(n)] = s   # empty: a pure node nobody reads (dropped from every page)
             return need[id(n)]
         for n in self.nodes:
             needed(n)
