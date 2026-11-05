@@ -511,7 +511,7 @@ class Graph:
 
 def page_digest(lines):
     """Hash of a page's paste text without the per-build noise (node names, pin ids, GUIDs), so a build reports only
-    the pages whose content really changed."""
+    the pages whose content really changed (positions and comment box sizes ignored)."""
     import hashlib, re as _re
     text = "\n".join(lines)
     names = {}
@@ -520,4 +520,5 @@ def page_digest(lines):
     text = _re.sub(r"\b(" + "|".join(map(_re.escape, names)) + r")\b", lambda m: names[m.group(1)], text) if names else text
     text = _re.sub(r"(PinId|NodeGuid|PersistentGuid)=[0-9A-F]{32}", r"\1=X", text)
     text = _re.sub(r" [0-9A-F]{32},", " X,", text)
+    text = _re.sub(r"\n\s*Node(PosX|PosY|Width|Height)=-?\d+", "", text)   # layout only: no re-paste for a moved node or box
     return hashlib.sha1(text.encode("utf-8")).hexdigest()[:12]
