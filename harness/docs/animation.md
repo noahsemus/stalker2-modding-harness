@@ -121,6 +121,18 @@ Mostly from ImmersiveDialogue 2.0-2.1 (walk in dialogue, arms, gestures) and Imm
 - ZST's watch check: LeftHand-slot montages with `AnimNotify_HandIKState`, its smooth hand-back comes from its own
   `AnimBP_Player` override (`BPI_WatchPose.SetWatchPose(Alpha, PreserveGrip)`), not reusable without that override.
 
+- **Turning a hand a set way round (Looting 2026-11-05):** a target orientation rolled by ~180 deg lets the slerp pick
+  the way round (the tester asked for clockwise and got counter-clockwise). Interpolate the unrolled orientation and
+  apply the roll on top, `roll(axis, angle x weight)`, so its sign decides. UE axes are left-handed (X forward, Y right,
+  Z up): a NEGATIVE angle about the forward reach turns clockwise as the player sees it. Check with the thumb bone's
+  screen angle frame by frame (atan2(dy, dz) relative to the hand).
+- **The knife and the bolt** (EMainHandEquipmentType 4 / 6) hold the free left hand at (40, -24, -18..-20) cm from the
+  eye in view axes at every pitch and stance: their layer = fp_ar_idle_stand + the item's mesh-space idle additive
+  (`AS_fp_knife_idle_add` / `AS_fp_bolt_idle_add`) + the rifle look. Left-hand gestures for them are built on that pose
+  with no HandIK-on notify (no grip: IK on pulls the free hand to the item's socket = "spinning hands").
+- **Door leaves:** a door leaf mesh's pivot is its hinge (`SM_cit_out_door_a_04` 0..104 cm, cupboards -51..0), so the
+  free edge = 2 x the leaf component's bounds centre - its location.
+
 ## Dead ends
 - Montage blend profiles as masks (UE 5.5 clears `ActiveBlendProfile` once the blend-in ends; BlendMask mode is not
   handled for montages).
