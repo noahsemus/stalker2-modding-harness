@@ -389,3 +389,135 @@ class Graph:
         for gi, (bx, by, w, h) in origin.items():
             b = self.boxes[gi]
             b[1], b[2], b[3], b[4] = int(bx), int(by), int(w), int(h)
+
+    # ---- pages: one Blueprint graph split over several event graph pages ----------------------------------------
+    def paginate(self, roots, default, prefix, self_class):
+        """Split the graph over event graph pages so each paste (and each delete in the editor) stays small; a build
+        then only re-pastes the pages whose text changed (page_digest). roots = [(page, [exec nodes])] in priority
+        order: an exec node belongs to the first page whose start nodes reach it along exec links, else to default.
+        Every exec link that crosses pages becomes a call on the source page (K2Node_CallFunction, self) to a custom
+        event on the target page (one per target node; calls run synchronously, so execution order is unchanged).
+        A pure node needed on several pages is cloned onto each, with its pure input tree. A data link from an exec
+        node's output to another page cannot be split: it raises (keep both ends on one page, or pass the value
+        through a variable). Comment boxes go to the page holding most of their exec nodes.
+        Returns {page: Graph} in the order of roots (default first)."""
+        from bp_t3d import TGT as _TGT
+        is_exec = self._is_exec
+        page = {}
+        for pg, starts in roots:
+            stack = list(starts)
+            while stack:
+                n = stack.pop()
+                if id(n) in page:
+                    continue
+                page[id(n)] = pg
+                for p in n.pins.values():
+                    if p.out and p.cat == "exec":
+                        stack += [q.node for q in p.links]
+        for n in self.nodes:
+            if is_exec(n):
+                page.setdefault(id(n), default)
+        need = {}
+
+        def needed(n, path=()):
+            if is_exec(n):
+                return {page[id(n)]}
+            if id(n) in need:
+                return need[id(n)]
+            s = set()
+            for p in n.pins.values():
+                if p.out:
+                    for q in p.links:
+                        if id(q.node) not in path:
+                            s |= needed(q.node, path + (id(n),))
+            need[id(n)] = s or {default}
+            return need[id(n)]
+        for n in self.nodes:
+            needed(n)
+        order = [default] + [pg for pg, _ in roots if pg != default]
+        pages = {pg: Graph() for pg in order}
+        for pg in pages.values():
+            pg.untangle_limit = self.untangle_limit
+        # every node's instance on each page it is needed on: the original on its first page, clones elsewhere
+        inst = {}
+        counter = [100000]
+        for n in list(self.nodes):
+            pgs = sorted(needed(n), key=order.index)
+            for k, pg in enumerate(pgs):
+                if k == 0:
+                    c = n
+                else:
+                    counter[0] += 1
+                    c = Node(pages[pg], n.klass, n.name.rsplit("_", 1)[0] + f"_{counter[0]}", n.x, n.y, n.comment, n.body)
+                    pages[pg].nodes.pop()   # appended below with the originals, in creation order
+                    for name, p in n.pins.items():
+                        q = c.pin(name, p.cat, sub=p.sub, subcat=p.subcat, out=p.out, hidden=p.hidden, adv=p.adv, extra=p.extra)
+                        q.member_ref, q.container, q.wrapper, q.ref, q.const = p.member_ref, p.container, p.wrapper, p.ref, p.const
+                inst[(id(n), pg)] = c
+        # rebuild the links page by page
+        links = [(p, q) for n in self.nodes for p in n.pins.values() if p.out for q in list(p.links)]
+        for n in self.nodes:
+            for p in n.pins.values():
+                p.links = []
+        events = {}
+        for p, q in links:
+            a, b = p.node, q.node
+            if p.cat == "exec":
+                pa, pb = page[id(a)], page[id(b)]
+                if pa == pb:
+                    self.link(p, q)
+                    continue
+                key = (id(b), q.name)
+                if key not in events:
+                    ename = f"{prefix}{pb.replace(' ', '')}_{len([1 for k in events if events[k][1] == pb])}"
+                    ev = Node(pages[pb], "/Script/BlueprintGraph.K2Node_CustomEvent", f"K2Node_CustomEvent_{counter[0] + 1}",
+                              b.x - 400, b.y - 150, f"from page {pa}", [f'CustomFunctionName="{ename}"'])
+                    counter[0] += 1
+                    pages[pb].nodes.pop()
+                    od = ev.pin("OutputDelegate", "delegate", out=True)
+                    od.member_ref = f'MemberName="{ename}",bSelfContext=True'
+                    ev.pin("then", "exec", out=True)
+                    self.link(ev.pins["then"], q)
+                    events[key] = (ev, pb, ename)
+                ev, _, ename = events[key]
+                counter[0] += 1
+                call = Node(pages[pa], "/Script/BlueprintGraph.K2Node_CallFunction", f"K2Node_CallFunction_{counter[0]}",
+                            a.x + 300, a.y, f"to page {pb}", [f'FunctionReference=(MemberName="{ename}",bSelfContext=True)'])
+                pages[pa].nodes.pop()
+                call.pin("execute", "exec")
+                call.pin("then", "exec", out=True)
+                call.pin("self", "object", sub=self_class, extra=_TGT)
+                self.link(p, call.pins["execute"])
+                inst[("call", id(call))] = call
+                inst[("ev", id(ev))] = ev
+                page[id(call)], page[id(ev)] = pa, pb
+                continue
+            for pg in needed(b):
+                src = inst.get((id(a), pg))
+                if src is None:
+                    raise ValueError(f"data link {a.name}.{p.name} -> {b.name}.{q.name} crosses from page {page.get(id(a))} to {pg}")
+                self.link(src.pins[p.name], inst[(id(b), pg)].pins[q.name])
+        # nodes per page, in creation order (originals, then their clones, then events and calls)
+        for key, c in inst.items():
+            pg = page[id(c)] if key[0] in ("call", "ev") else key[1]
+            if c not in pages[pg].nodes:
+                pages[pg].nodes.append(c)
+        for b in self.boxes:
+            inside = [page[id(n)] for n in self.nodes if is_exec(n) and b[1] <= n.x <= b[1] + b[3] and b[2] <= n.y <= b[2] + b[4]]
+            if inside:
+                pages[max(set(inside), key=inside.count)].boxes.append(b)
+        return pages
+
+
+def page_digest(lines):
+    """Hash of a page's paste text without the per-build noise (node names, pin ids, GUIDs), so a build reports only
+    the pages whose content really changed."""
+    import hashlib, re as _re
+    text = "\n".join(lines)
+    names = {}
+    for m in _re.finditer(r'Name="([A-Za-z0-9_]+_\d+)"', text):
+        names.setdefault(m.group(1), f"N{len(names)}")
+    text = _re.sub(r"\b(" + "|".join(map(_re.escape, names)) + r")\b", lambda m: names[m.group(1)], text) if names else text
+    text = _re.sub(r"(PinId|NodeGuid|PersistentGuid)=[0-9A-F]{32}", r"\1=X", text)
+    text = _re.sub(r" [0-9A-F]{32},", " X,", text)
+    return hashlib.sha1(text.encode("utf-8")).hexdigest()[:12]

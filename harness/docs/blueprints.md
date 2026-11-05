@@ -24,6 +24,19 @@ of 20-200 nodes (event graphs and anim graphs).
 4. They compile and save; read it back with `export_t3d.py` to verify (the export lists deleted-but-not-GC'd nodes
    too: trust each graph's `Nodes(n)` list).
 
+**Big generated graphs: split them over event graph pages** (Looting 2026-11-05: deleting a 3,700-node graph crashed
+the editor every second time in a session). `Graph.paginate(roots, default, prefix, self_class)` assigns each exec node
+to the first page whose start nodes reach it, turns every exec link between pages into a call (`K2Node_CallFunction`,
+self) to a custom event on the target page (synchronous: the order is unchanged), clones shared pure trees per page,
+and refuses a data link from an exec node's output to another page (keep both ends on one page, or pass the value
+through a variable; a bound event's `OutputDelegate` must sit on its bind node's page). Write one `.txt` per page plus
+a `pages.json` of `page_digest`s; `tools/paste_pages.ps1 -Dir <dir>` opens a small always-on-top window for the
+tester with one Copy button per CHANGED page (against `pasted.json`, which the agent updates after checking the paste).
+Pages are made once by hand (My Blueprint > Graphs > +, named as the page; Python cannot add event graph pages). The
+first switch from one graph: on a freshly opened editor delete everything in the old graph FIRST (its custom events
+would collide with the pasted ones and get renamed), then paste the pages, the main page (the calls) last, then
+File > Refresh All Nodes, Compile, Save. Aim for pages of ~200-800 nodes.
+
 **Readable paste layout (tester-approved, Looting 2026-10-10: "best layout so far"):** call `graph.layout_tree()`
 before writing. It
 - clones every pure node that feeds more than one pin (pure nodes are re-evaluated per use anyway), so each data

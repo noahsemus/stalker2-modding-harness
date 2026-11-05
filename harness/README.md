@@ -44,6 +44,7 @@ PowerShell tools default `-Mod` to `mod.json` "name". Per-user values (paths, Gi
 | `tools/voice/dialog_runtime_probe.py` | shell, game running | read-only check of the game's merged voiceover maps |
 | `tools/re/pe.py`, `pdbq.py` | shell | retail exe address helper; stale-PDB name queries (`docs/reverse-engineering.md`) |
 | `tools/new_mod.ps1`, `sync_harness.ps1`, `push_harness.ps1` | shell | harness lifecycle (`docs/harness-workflow.md`) |
+| `tools/paste_pages.ps1 -Dir <dir>` | agent starts it, tester clicks | copy window for a paginated Blueprint paste (`bp_graph.paginate`): one Copy button per changed page (`docs/blueprints.md`) |
 | `tools/install_skills.ps1` | shell | `skills/<name>/` -> the repo's `.claude/skills/<name>/` (Claude Code `/<name>`); run by sync / new mod. Skills run only when the tester invokes them (`skills/adversarial-review`: fresh-subagent review loop of a generated build) |
 | `tools/coord.ps1` | shell | several agents on one PC: claim / release shared resources (editor, cook, game, post-process layer), post / read messages (`docs/coordination.md`) |
 | `probe/` | modder's PC only | UE4SS C++/Lua probe examples and build notes |
