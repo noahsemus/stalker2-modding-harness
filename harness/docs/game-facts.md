@@ -155,3 +155,23 @@ mod learns something about the game itself. Line numbers refer to `<kit>\bp_api_
   and read the weight texts (`...InventoryWidget / LootGridWidget → WeightBar → CurrentWeightText`, `W_Text_C`,
   `TextWidget.GetText`) by finding them by path name. World stashes (`BP_Stash*`) are subclasses of the item
   container actors; the own stash is a native `PlayerStash` (Looting research 2026-10-09, kit only).
+
+## Rendering: reflections and ray tracing (research 2026-11-06, game 2.1.0, retail exe + kit exe + UE 5.5 source)
+- **No hardware ray tracing is possible from paks, ini or shaders.** Retail and the Zone Kit editor were both built with
+  `RHI_RAYTRACING=0` (a UBT compile-time define): the `TEXT()` literals inside `#if RHI_RAYTRACING` in UE 5.5's
+  renderer, D3D12 RHI and Lumen HWRT files are absent from both exes (e.g. `FLumenReflectionHardwareRayTracingCS/RGS`,
+  any `/Engine/Private/RayTracing/` path, `FTrivialMaterialCHS`), the IID of `ID3D12StateObjectProperties` is absent,
+  and the retail global shader map (7,688 shaders) and all 21 material shader archives hold 0 ray tracing shaders.
+  Cooked with `r.RayTracing=False` (retail `Stalker2/Config/DefaultEngine.ini:149`; `r.Lumen.HardwareRayTracing=True`
+  at :150 is a dead leftover). The `r.Lumen.HardwareRayTracing*` cvars and `BuildRaytracingAccelerationStructure`
+  (a D3D12 method-name table) are present but inert. Only native code (injected DLL building its own DXR / inline
+  RayQuery pass) could add ray tracing: a months-long project.
+- Lumen is software only: screen traces, then mesh SDFs (only up to `r.Lumen.TraceMeshSDFs.TraceDistance` from the
+  surface, shared with GI), then the global SDF + surface cache. Vanilla `ReflectionQuality@3` sets
+  `r.Lumen.Reflections.TraceMeshSDFs=0`.
+- Water is Single Layer Water. Its Lumen reflection pass (UE 5.5 `LumenReflections.cpp`) never traces mesh SDFs (opaque
+  pass only), is never temporally denoised and always runs at full resolution: off-screen water reflections come from
+  the global SDF (`r.LumenScene.GlobalSDF.Resolution`) + surface cache. `r.Water.SingleLayer.Reflection` 3 forces SSR.
+- `r.Nanite.DisableFallbackMeshes` is a GSC cvar ("saves extra VRAM used by nanite fallback"); retail sets it True.
+- A user `%LOCALAPPDATA%\Stalker2\Saved\Config\Windows\Engine.ini` is not present by default; graphics mods (Ultra+)
+  set cvars at runtime from UE4SS Lua, which outranks ini values for the cvars they touch.
