@@ -33,6 +33,15 @@ The Zone Kit's editor binary looks richer and is a trap (measured 2026-10, kit v
   `FALifeDirectorScenarioPrototype`, ...). Grep its type-descriptor list for a name, carry the name to retail.
 - Same for cfg values: the kit's `GameData` cfgs may differ from what retail ships; for a number that matters, read the
   retail pak's cfg.
+- **Where retail keeps them** (game 2.1, 2026-11-06): `<game>\Stalker2\Content\Paks\pakchunk0-Windows.pak` (182 MB,
+  legacy pak) holds `Stalker2/Content/GameLite/GameData/...`, partly as plain `.cfg`, but the big trees are merged
+  binaries: `QuestNodePrototypes.cfg.bin` (44 MB unpacked), `SpawnActorPrototypes.cfg.bin`, `<Type>.cfg.bin` per
+  folder. Pull one out with the kit's UnrealPak: `UnrealPak <pak> -Extract <dir> -Filter=*GameData/<Name>.cfg.bin`
+  (`-Filter` does filter for `-Extract`; it is `-List` that ignores it). Format: a pool of length-prefixed strings,
+  then 21-byte nodes (name, name, value, source path, flag, child count; references are 1-based string indices). Every
+  record keeps its source path (`GameData/SpawnActorPrototypes/WorldMap_WP/<Level>/<GUID>.cfg`), so patch-folder
+  placement still follows the original file. SIDs and field names are plain ASCII: a byte search answers "does
+  retail still have node / actor X" in seconds.
 
 ## Strings: extract twice (the highest-value rule)
 ```
