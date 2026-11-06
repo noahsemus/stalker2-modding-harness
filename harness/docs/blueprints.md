@@ -86,6 +86,12 @@ generators in the mod's `zonekit/tools/gen_*.py`; lift reusable node builders in
 - Static library functions are impure unless declared BlueprintPure: e.g. `KismetMaterialLibrary.GetScalarParameterValue`
   pasted without exec pins compiles with "was pruned because its Exec pin is not connected" and reads 0. Put such calls
   in the exec chain and keep their results in variables.
+- **A struct pin default on a game struct came through empty** (ImmersiveBattleFixes 2026-11-06:
+  `CppMediator.StartQuestNode`'s `SID` pin, struct `/Script/Stalker2.PrototypeSID`, text form `(Value="X")`, pasted as
+  `DefaultValue="(Value=\"X\")"` where the editor writes it; after the paste + Refresh All Nodes the export showed
+  `(Value=\"\")`, while string defaults on the same nodes survived; the pin is const-ref). Feed such pins from a
+  member variable of that struct type whose default is set on the CDO from Python
+  (`v = unreal.PrototypeSID(); v.import_text('(Value="X")')`), and check the export / CDO after.
 - **Cast output pin names use the class display name with spaces**: `AsInput Mapping Context`,
   `AsInteractable Item Container`, `AsDead Body` (a misspelled pin silently drops its links).
 - From Git Bash, `ue_exec.py --arg ASSET=/Mod/...` gets its path rewritten to `C:/Program Files/Git/Mod/...` (MSYS
