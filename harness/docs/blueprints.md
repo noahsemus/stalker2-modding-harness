@@ -86,6 +86,11 @@ generators in the mod's `zonekit/tools/gen_*.py`; lift reusable node builders in
 - Static library functions are impure unless declared BlueprintPure: e.g. `KismetMaterialLibrary.GetScalarParameterValue`
   pasted without exec pins compiles with "was pruned because its Exec pin is not connected" and reads 0. Put such calls
   in the exec chain and keep their results in variables.
+- **Two nodes with the same `Name=` in one paste: one is silently dropped** and the exec chain through it ends there
+  (ImmersiveBattleFixes 2026-11-06: lifted MCM nodes numbered 920+k / 930+k / 940+k collided past 10 settings; the
+  register chain stopped at setting 11, `AddUniqueModID` never ran and the mod was missing from the MCM menu). Assert
+  unique names in the generator, and after the paste count the calls in the export or the cooked bytecode
+  (`zen_kismet.py`).
 - **A struct pin default on a game struct came through empty** (ImmersiveBattleFixes 2026-11-06:
   `CppMediator.StartQuestNode`'s `SID` pin, struct `/Script/Stalker2.PrototypeSID`, text form `(Value="X")`, pasted as
   `DefaultValue="(Value=\"X\")"` where the editor writes it; after the paste + Refresh All Nodes the export showed
