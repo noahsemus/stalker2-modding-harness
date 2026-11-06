@@ -41,6 +41,9 @@ Remove an element: `PreinstalledUpgrades : struct.begin {bpatch}` / `[0] : remov
   vanilla; the file alone is enough).
 - DLC data is separate: patch `GameLite/DLCGameData/{DLC1,Deluxe,PreOrder,Ultimate}/...` too for DLC items/weapons.
 - Zone Kit mods ship patch files in the OverrideContent pak (as loose files under the GameData path).
+- Spawn actor patches (`SpawnActorPrototypes/WorldMap_WP/<Level>/<GUID>/<GUID>_patch_<Mod>.cfg`) make repo paths over
+  260 characters: Git for Windows refuses to add them ("Filename too long") until `git config core.longpaths true`
+  in that repo (ImmersiveBattleFixes 2026-11-06).
 
 **New prototypes** (new effects, items, quest nodes): plain `.cfg` files in the mod's
 `Content/GameLite/ModGameData/<Mod>/<Type>/` (loaded through the GameFeatureData's AddConfigsPath; PIR, ZST, Sleeping
