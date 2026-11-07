@@ -188,3 +188,12 @@ mod learns something about the game itself. Line numbers refer to `<kit>\bp_api_
 - `r.Nanite.DisableFallbackMeshes` is a GSC cvar ("saves extra VRAM used by nanite fallback"); retail sets it True.
 - A user `%LOCALAPPDATA%\Stalker2\Saved\Config\Windows\Engine.ini` is not present by default; graphics mods (Ultra+)
   set cvars at runtime from UE4SS Lua, which outranks ini values for the cvars they touch.
+- `r.ReflectionMethod` is overruled by the GSC cvar `r.ReflectionMethod.Override` (scalability sets it to 1 = Lumen
+  on every `ReflectionQuality` level): to switch reflection method set the `.Override` cvar (2 = SSR; tester saw the
+  change, 2026-11-06). Same pattern exists for `r.DynamicGlobalIlluminationMethod.Override`.
+- Planar reflections do not show (tested 2026-11-06): the code and global shaders are in retail
+  (`FPlanarReflectionPS`, `TPrefilterPlanarReflectionPS`), `r.AllowGlobalClipPlane=False` (only a warning in UE 5.5),
+  and a `/Script/Engine.PlanarReflection` spawned from UE4SS Lua (`World:SpawnActor`, at the player's feet, fade
+  400-800 cm, 50/100 %) gets its `PlanarReflectionComponent`, but the tester saw no mirror image with Lumen or SSR
+  reflections. Characters occluding the background in reflections (screen traces have no data behind them; the
+  fallback is the SDF / surface cache, which has no skinned meshes) therefore has no fix short of ray tracing.

@@ -126,8 +126,9 @@ never-saved temp asset crashes the commandlet: leave it unsaved instead.
 
 Vortex (STALKER 2 HoC extension, Nexus 958): installs pak mods into `~mods`; disabling a mod in Vortex deletes its
 deployed folder; deployed files are hardlinks into Vortex staging (copying over them overwrites staging too). For
-UE4SS DLL mods it strips `enabled.txt` and writes `mods.txt` only from its "UE4SS Load Order" tab after the user
-touches it. Vortex redeploys can rewrite `mods.txt` and remove hand-installed probe folders: re-check after any
+UE4SS DLL and Lua script mods it strips `enabled.txt` and writes `mods.txt` only from its "UE4SS Load Order" tab after
+the user touches it (a deploy on 2026-11-06 left `mods.txt` with only the manual mods: every Vortex Lua mod silently
+stopped loading until the tab was touched; check the UE4SS log for `Starting Lua mod '<Name>'`). Vortex redeploys can rewrite `mods.txt` and remove hand-installed probe folders: re-check after any
 Vortex activity.
 
 ### Steam Workshop (optional, the tester's clicks)
