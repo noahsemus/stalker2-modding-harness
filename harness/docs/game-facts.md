@@ -197,3 +197,11 @@ mod learns something about the game itself. Line numbers refer to `<kit>\bp_api_
   400-800 cm, 50/100 %) gets its `PlanarReflectionComponent`, but the tester saw no mirror image with Lumen or SSR
   reflections. Characters occluding the background in reflections (screen traces have no data behind them; the
   fallback is the SDF / surface cache, which has no skinned meshes) therefore has no fix short of ray tracing.
+- NPC hair is Groom (HairStrands): each hairstyle = a strands groom `..._STR` plus a cards groom `..._CAR` in
+  `AdditionalGrooms` (`GroomGeneratorPrototypes.cfg:95-114`; faces via `AttachMeshPrototypes.cfg` `GroomPrototypeSID`),
+  quality copies picked by `mg.HairQuality`. Strands LODs are visible only at close-up screen sizes (head hair STR
+  LOD2 invisible below 0.35; CAR LOD0 invisible), so strands appear only in dialogue / cutscene close-ups; stock 5.5
+  groom LOD has no hysteresis. Dialogue: FOV 90 -> 70 (`CoreVariables.cfg:332-333`), DOF f/32 (:334-336), GSC cvar
+  `ai.AgentLODBiasForCinematicsAndDialogs` (default -1) changes NPC mesh LOD. GSC cvar `r.HairStrands.ForceLOD`
+  ("Force the hair LOD to this value", default -1). Research: ImmersiveFixes
+  `zonekit/research/2026-11-06-npc-hair-flicker.md`.
