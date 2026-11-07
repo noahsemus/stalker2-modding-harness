@@ -155,6 +155,12 @@ mod learns something about the game itself. Line numbers refer to `<kit>\bp_api_
   and read the weight texts (`...InventoryWidget / LootGridWidget → WeightBar → CurrentWeightText`, `W_Text_C`,
   `TextWidget.GetText`) by finding them by path name. World stashes (`BP_Stash*`) are subclasses of the item
   container actors; the own stash is a native `PlayerStash` (Looting research 2026-10-09, kit only).
+- Which inventory an item used in the loot window came from has no BP-visible signal: the native hook is the pawn
+  event `Obj.OnBeforeUseItem_BP(ItemUID)` (D2:4992; a pawn override), `ItemUID` has no BP queries, the right-click menu
+  (`RightClickMenuWidget`, enum `ERightClickMenu`: Use, Take, TakeAll, Put, Drop, Equip, ... in the retail exe) is
+  native. `IMC_Inventory` maps LMB double-click to both `IA_UI_Inventory_UseItem` and `IA_UI_Inventory_LootTakeItem`
+  (native picks by grid); the right-click menu has its own Exclusive context `IMC_RightClickContextualMenu`. Usable
+  evidence: the two weight texts (Immersive Looting 2026-11-07, unconfirmed in game).
 
 ## Quest doors and signals (ImmersiveBattleFixes 2026-11-06, SIRCAA, in game)
 - Quest doors (`BP_DoorView`, double glass doors) are World Partition actors in `WorldMap_WP`, not in the quest logic
