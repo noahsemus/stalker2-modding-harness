@@ -76,6 +76,10 @@ stream + MemoryListStream + a link map work without a debugger.
 When a symptom might not be ours, park our dev pak (outside `Content\Paks\`) and have the tester repeat the exact
 steps. Known not-ours: the sleep black-screen soft hang (vanilla with all paks off sleeps fine; with the tester's mod
 set it hangs; bisect order if the tester wants it: UltraPlusExtensions → UObjectCacheMod → other time/weather mods).
+Also not ours: a crash whose game log ends `Streamline/DLSSG present failed ... DXGI_ERROR_INVALID_CALL` (NVIDIA frame
+generation; the dump's stack runs through `sl.interposer.dll` into the game's fatal-error exit, exception code
+0x4000 raised from KERNELBASE). UE4SS writes `crash_*.dmp` for any crash once loaded; that alone does not make it a
+UE4SS mod's fault.
 
 **The save is a suspect too.** A fault can live in the tester's save and survive removing the mod (Immersive Looting
 2026-10-10: body carry dead on every save made after the first dev builds, with the mod removed; a save from before the
