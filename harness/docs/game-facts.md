@@ -156,6 +156,19 @@ mod learns something about the game itself. Line numbers refer to `<kit>\bp_api_
   `TextWidget.GetText`) by finding them by path name. World stashes (`BP_Stash*`) are subclasses of the item
   container actors; the own stash is a native `PlayerStash` (Looting research 2026-10-09, kit only).
 
+## Quest doors and signals (ImmersiveBattleFixes 2026-11-06, SIRCAA, in game)
+- Quest doors (`BP_DoorView`, double glass doors) are World Partition actors in `WorldMap_WP`, not in the quest logic
+  levels. Their receivers (Lock / Unlock / Open / ForceOpen `SignalReceiverComponent`s) are found in the kit's
+  `WorldMap-WindowsModEditor.pak` by pairing each GUID with its `BndEvt__BP_DoorView_<Receiver>` delegate; quest
+  `SendSignal` node names often lie about the component (`..._ForceCloseReceiver` was a Lock).
+- A door signal sent while the player was 40-80 m away did not take effect (E06_MQ02's unlock / open of
+  `nii_Door_05` / `_06`; vanilla relies on it); the same signals sent from `Trigger` nodes when the player walks into
+  the area next to the door worked. Re-send door signals from a nearby trigger (`TrackBeforeActive = true`) when a
+  mod depends on them. (Assumed cause: the door actor is not loaded when the signal arrives.)
+- A forced `SetDialog` gated by a `DistanceToPoint` pin (E06_MQ02 Dalin, 4 m) never started for the tester, with or
+  without this mod; launching the same SetDialog from an extra launcher group 3 s after the previous dialog ends
+  started it (forced dialogs start at any distance).
+
 ## Rendering: reflections and ray tracing (research 2026-11-06, game 2.1.0, retail exe + kit exe + UE 5.5 source)
 - **No hardware ray tracing is possible from paks, ini or shaders.** Retail and the Zone Kit editor were both built with
   `RHI_RAYTRACING=0` (a UBT compile-time define): the `TEXT()` literals inside `#if RHI_RAYTRACING` in UE 5.5's
