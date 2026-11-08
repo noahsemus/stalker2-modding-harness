@@ -127,6 +127,10 @@ Blueprint "Float" variables are doubles. `BlueprintEditorLibrary.add_member_vari
 - In the live editor, `EditorAssetLibrary.duplicate_asset` and `AssetTools.duplicate_asset` return **None for /Game
   sources**; run duplication headless (`run_headless.ps1 tools/editor/duplicate_asset.py`) or edit existing mod
   assets in place.
+- Never edit an asset headless while the tester's editor is running (check with `ue_exec.py` first, not by process
+  name): the editor keeps its loaded copy, and its next save overwrites the headless one. A variable added headless
+  then shows on paste as "Could not find a variable named ..." / "The property associated with ... could not be
+  found"; add it again in the live editor (`ue_exec.py`, `add_member_variable`), then Refresh All Nodes / Compile.
 - `unreal.new_object(cls, outer)` works for small sub-objects (e.g. `PlayerMappableKeySettings`). Setting properties
   on freshly created modifier/trigger objects fails with "cannot be edited on templates": **move** the real objects
   from a duplicated source instead (`rename(outer=...)`, see `input.md`).
