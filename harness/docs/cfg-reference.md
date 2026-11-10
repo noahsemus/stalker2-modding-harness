@@ -78,6 +78,12 @@ Before any binary digging on "the game ignores my cfg", diff the mod's cfg again
   file through `refurl` (or inherit it by `refkey` from a DLC-local template), which is how to tell a DLC weapon
   from a DLC armor. A change to a whole prototype family (weapons, armors, attachments, consumables) needs the
   matching DLC patch too, or DLC variants behave differently.
+- Retail DLC paks (game 2.1, plain unencrypted `.pak`, `UnrealPak <pak> -List` / `-Extract <dir>` work; entries are
+  `.cfg.bin`, read with any strings dump): `pakchunk101` PreOrder, `pakchunk102` Deluxe, `pakchunk104` Ultimate.
+- The pre-order backpack (`PreOrder/BackpackPrototypes.cfg`, `Backpack_PreOrder`) is the default backpack's mesh
+  `SK_bpa_pla_01` with `MaterialPath = MI_bpa_sta_09_a_02_fov` (default: the mesh's own `MI_bpa_sta_09_a_01_fov`;
+  both are base-game assets). A mod reproducing the player's backpack must copy the materials, not only the mesh.
+  To test without owning the DLC, a dev pak can bpatch `Backpack_Default` / `Default` with that `MaterialPath`.
 
 ## SIDs and keys
 - Two mods defining the same root SID: the result depends on load order. Only the owner defines a prototype;
