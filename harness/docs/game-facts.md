@@ -209,5 +209,10 @@ mod learns something about the game itself. Line numbers refer to `<kit>\bp_api_
   LOD2 invisible below 0.35; CAR LOD0 invisible), so strands appear only in dialogue / cutscene close-ups; stock 5.5
   groom LOD has no hysteresis. Dialogue: FOV 90 -> 70 (`CoreVariables.cfg:332-333`), DOF f/32 (:334-336), GSC cvar
   `ai.AgentLODBiasForCinematicsAndDialogs` (default -1) changes NPC mesh LOD. GSC cvar `r.HairStrands.ForceLOD`
-  ("Force the hair LOD to this value", default -1). Research: ImmersiveFixes
+  ("Force the hair LOD to this value", default -1). GSC loads groom data asynchronously at every LOD
+  (`DefaultEngine.ini:257-259`: `r.HairStrands.Strands/Cards.BulkData.AsyncLoading=10`, stock -1 = synchronous;
+  `ReleaseAfterUse=1`): until a groom LOD's curves have streamed in, stock 5.5 `FHairCommonResource::Allocate` returns
+  `Loading` and that LOD is not drawn, and a finer LOD (more curves) loads again. `ForceLOD 1` +
+  `AgentLODBiasForCinematicsAndDialogs 0` did not stop the dialogue-start hair flicker; it stopped only after the same
+  conversation was entered a few times (2026-11-10). Research: ImmersiveFixes
   `zonekit/research/2026-11-06-npc-hair-flicker.md`.
