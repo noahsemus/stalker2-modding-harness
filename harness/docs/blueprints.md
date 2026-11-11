@@ -105,6 +105,10 @@ generators in the mod's `zonekit/tools/gen_*.py`; lift reusable node builders in
   `(Value=\"\")`, while string defaults on the same nodes survived; the pin is const-ref). Feed such pins from a
   member variable of that struct type whose default is set on the CDO from Python
   (`v = unreal.PrototypeSID(); v.import_text('(Value="X")')`), and check the export / CDO after.
+- **A function pasted as pure that is not pure is pruned at compile, and its output reads as the default**: the
+  compiler warns "<node> was pruned because its Exec pin is not connected". `KismetSystemLibrary.
+  GetConsoleVariableFloatValue` / `IntValue` / `BoolValue` are exec nodes in UE 5.5 (ImmersiveFixes 2026-11-10).
+  Give such a call `execute` / `then` pins and put it in the exec chain.
 - **Cast output pin names use the class display name with spaces**: `AsInput Mapping Context`,
   `AsInteractable Item Container`, `AsDead Body` (a misspelled pin silently drops its links).
 - From Git Bash, `ue_exec.py --arg ASSET=/Mod/...` gets its path rewritten to `C:/Program Files/Git/Mod/...` (MSYS
