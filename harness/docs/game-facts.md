@@ -212,7 +212,10 @@ mod learns something about the game itself. Line numbers refer to `<kit>\bp_api_
   ("Force the hair LOD to this value", default -1). GSC loads groom data asynchronously at every LOD
   (`DefaultEngine.ini:257-259`: `r.HairStrands.Strands/Cards.BulkData.AsyncLoading=10`, stock -1 = synchronous;
   `ReleaseAfterUse=1`): until a groom LOD's curves have streamed in, stock 5.5 `FHairCommonResource::Allocate` returns
-  `Loading` and that LOD is not drawn, and a finer LOD (more curves) loads again. `ForceLOD 1` +
+  `Loading` and that LOD is not drawn, and a finer LOD (more curves) loads again. Strands resources themselves always
+  allocate async (hard-coded, `GroomManager.cpp:2729-2741`; the cvar covers guides / cards only), and a groom whose
+  data is not ready after a face mesh LOD change is not drawn that frame (:2779-2785): first strands use per hairstyle
+  and per mesh LOD blinks for a frame or two. `ForceLOD 1` +
   `AgentLODBiasForCinematicsAndDialogs 0` did not stop the dialogue-start hair flicker; it stopped only after the same
   conversation was entered a few times (2026-11-10). Research: ImmersiveFixes
   `zonekit/research/2026-11-06-npc-hair-flicker.md`.
